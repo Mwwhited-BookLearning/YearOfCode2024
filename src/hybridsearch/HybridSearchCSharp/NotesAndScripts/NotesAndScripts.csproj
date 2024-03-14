@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.Build.NoTargets/3.7.56">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Containers\opensearch.bat" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Containers\opensearch.bat" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Designs\" />
+  </ItemGroup>
+
+</Project>

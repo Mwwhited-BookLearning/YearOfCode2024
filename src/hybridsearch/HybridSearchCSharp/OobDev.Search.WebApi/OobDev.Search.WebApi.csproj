@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OobDev.Search.Azure\OobDev.Search.Azure.csproj" />
+    <ProjectReference Include="..\OobDev.Search.Neo4j\OobDev.Search.Neo4j.csproj" />
+    <ProjectReference Include="..\OobDev.Search.Ollama\OobDev.Search.Ollama.csproj" />
+    <ProjectReference Include="..\OobDev.Search.OpenSearch\OobDev.Search.OpenSearch.csproj" />
+    <ProjectReference Include="..\OobDev.Search.Qdrant\OobDev.Search.Qdrant.csproj" />
+    <ProjectReference Include="..\OobDev.Search.Sbert\OobDev.Search.Sbert.csproj" />
+    <ProjectReference Include="..\OobDev.Search\OobDev.Search.csproj" />
+  </ItemGroup>
+
+</Project>
