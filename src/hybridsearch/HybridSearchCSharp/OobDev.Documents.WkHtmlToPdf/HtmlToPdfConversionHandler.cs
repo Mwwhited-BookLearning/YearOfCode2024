@@ -1,11 +1,19 @@
-﻿namespace OobDev.Documents.WkHtmlToPdf;
+﻿using System;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace OobDev.Documents.WkHtmlToPdf;
 
 public class HtmlToPdfConversionHandler : IDocumentConversionHandler
 {
-    public async Task ConvertAsync(Stream source, string sourceContentType, Stream destination, string destinationContentType)
+    public Task ConvertAsync(Stream source, string sourceContentType, Stream destination, string destinationContentType)
     {
         if (!SupportedSource(sourceContentType)) throw new NotSupportedException($"Source Content Type \"{sourceContentType}\" is not supported");
         if (!SupportedDestination(destinationContentType)) throw new NotSupportedException($"Source Content Type \"{destinationContentType}\" is not supported");
+
+        throw new NotSupportedException();
+       //Wkhtmltopdf.NetCore.GeneratePdf
 
         //using var reader = new StreamReader(source, Encoding.UTF8);
         //using var writer = new StreamWriter(destination, Encoding.UTF8) { AutoFlush = true, };
@@ -18,4 +26,5 @@ public class HtmlToPdfConversionHandler : IDocumentConversionHandler
 
     public string[] Sources => ["text/html", "text/xhtml", "text/xhtml+xml"];
     public bool SupportedSource(string contentType) => Sources.Any(t => string.Equals(t, contentType, StringComparison.OrdinalIgnoreCase));
+
 }

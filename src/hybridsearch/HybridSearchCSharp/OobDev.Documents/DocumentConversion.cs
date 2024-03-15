@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,39 +28,19 @@ public class DocumentConversion : IDocumentConversion
         var steps = _chain.Steps(sourceContentType, destinationContentType);
         if (steps.Length == 0) throw new NotSupportedException($"Conversion from \"{sourceContentType}\" to \"{destinationContentType}\" is not supported");
         else if (steps.Length == 1) await steps[0].Handler.ConvertAsync(source, sourceContentType, destination, destinationContentType);
-
-
-
-        //TODO: build change
-        throw new NotSupportedException();
-    }
-}
-public class DocumentConversionChainBuilder : IDocumentConversionChainBuilder
-{
-    private readonly IEnumerable<IDocumentConversionHandler> _handlers;
-
-    public DocumentConversionChainBuilder(IEnumerable<IDocumentConversionHandler> handlers)
-    {
-        _handlers = handlers;
-    }
-
-    public ChainStep[] Steps(string sourceContentType, string destinationContentType)
-    {
-        var simple = _handlers.FirstOrDefault(h => h.SupportedSource(sourceContentType) && h.SupportedDestination(destinationContentType));
-        if (simple != null) return [new ChainStep() { Handler = simple, SourceContentType = sourceContentType, DestinationContentType = destinationContentType }];
-
-
-        //TODO: build graph
-
-        //        _handlers.Where(s=>s.SupportedSource(sourceContentType)).ToList();
-
-        //var steps = new List<ChainStep>();
-        //do
-        //{
-        //} while (steps[^1].DestinationContentType != destinationContentType);
-        //_handlers.Where()
-
-        throw new NotImplementedException();
+        else
+        {
+            // Framework/BuildExtensions.md
+            var temp = new MemoryStream();
+            foreach (var step in steps)
+            {
+                await step.Handler.ConvertAsync(source, step.SourceContentType, temp, step.DestinationContentType);
+                temp.Position = 0;
+                source = temp;
+            }
+            await temp.CopyToAsync(destination);
+            destination.Position = 0;
+        }
     }
 }
 

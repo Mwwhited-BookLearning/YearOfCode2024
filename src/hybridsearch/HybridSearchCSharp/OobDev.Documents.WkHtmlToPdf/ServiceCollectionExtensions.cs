@@ -4,7 +4,7 @@ namespace OobDev.Documents.WkHtmlToPdf;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection TryAddPdfServices(this IServiceCollection services)
+    public static IServiceCollection TryAddWkHtmlToPdfServices(this IServiceCollection services)
     {
         services.AddTransient<IDocumentConversionHandler, HtmlToPdfConversionHandler>();
         return services;

@@ -9,6 +9,7 @@ public static class ServiceCollectionExtensions
     {
         services.TryAddTransient<IDocumentConversion, DocumentConversion>();
         services.TryAddTransient<IDocumentConversionChainBuilder, DocumentConversionChainBuilder>();
+        services.TryAddTransient<IDocumentConversionHandler, ToTextConversionHandler>();
         return services;
     }
 }

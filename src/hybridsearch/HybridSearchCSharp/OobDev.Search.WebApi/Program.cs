@@ -1,4 +1,6 @@
 using OobDev.Documents;
+using OobDev.Documents.Markdig;
+using OobDev.Documents.WkHtmlToPdf;
 using OobDev.Search.Azure;
 using OobDev.Search.Ollama;
 using OobDev.Search.OpenSearch;
@@ -18,7 +20,7 @@ public class Program
 
                .TryAddDocumentServices()
                .TryAddMarkdigServices()
-               .TryAddDocumentServices()
+               .TryAddWkHtmlToPdfServices()
 
                .TryAddSearchServices()
                .TryAddOllamaServices()

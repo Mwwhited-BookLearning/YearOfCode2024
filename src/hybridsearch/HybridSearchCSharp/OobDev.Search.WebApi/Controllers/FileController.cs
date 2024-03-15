@@ -30,7 +30,22 @@ public class FileController : Controller
             ContentReference blob => File(blob.Content, blob.ContentType, blob.FileName)
         };
 
-    [Route("{*file}")]
+    [HttpGet("{*file}")]
+    [ProducesResponseType(typeof(FileStreamResult), (int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.NotFound)]
+    public async Task<IActionResult> Text(string file) =>
+        await _search.DownloadAsync(file) switch
+        {
+            null => NotFound(),
+            ContentReference blob => File(
+                await ConvertToAsync(blob.Content, blob.ContentType, "text/plain"),
+                "text/plain",
+                Path.ChangeExtension(blob.FileName, ".txt"))
+        };
+
+    [HttpGet("{*file}")]
+    [ProducesResponseType(typeof(FileStreamResult), (int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.NotFound)]
     public async Task<IActionResult> Html(string file) =>
         await _search.DownloadAsync(file) switch
         {
@@ -41,7 +56,9 @@ public class FileController : Controller
                 Path.ChangeExtension(blob.FileName, ".html"))
         };
 
-    [Route("{*file}")]
+    [HttpGet("{*file}")]
+    [ProducesResponseType(typeof(FileStreamResult), (int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.NotFound)]
     public async Task<IActionResult> Pdf(string file) =>
         await _search.DownloadAsync(file) switch
         {
@@ -59,23 +76,6 @@ public class FileController : Controller
         ms.Position = 0;
         return ms;
     }
-
-
-    //{
-    //    var result = await _blob.GetContentAsync(HttpUtility.UrlDecode(file));
-    //    if (result == null)
-    //        return NotFound();
-
-    //    using var reader = new StreamReader(result.Content);
-    //    var markdig = Markdown.Parse(reader.ReadToEnd());
-    //    var html = markdig.ToHtml();
-
-    //    var ms = new MemoryStream();
-    //    var writer = new StreamWriter(ms) { AutoFlush = true, };
-    //    await writer.WriteAsync(html);
-    //    ms.Position = 0;
-    //    return File(ms, "text/html");
-    //}
 
     [HttpGet("{*file}")]
     [ProducesResponseType(typeof(FileStreamResult), (int)HttpStatusCode.OK)]

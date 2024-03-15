@@ -1,5 +1,8 @@
 ﻿using Markdig;
-using System.Text;
+using System;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace OobDev.Documents.Markdig;
 
@@ -10,8 +13,8 @@ public class MarkdownToHtmlConversionHandler : IDocumentConversionHandler
         if (!SupportedSource(sourceContentType)) throw new NotSupportedException($"Source Content Type \"{sourceContentType}\" is not supported");
         if (!SupportedDestination(destinationContentType)) throw new NotSupportedException($"Source Content Type \"{destinationContentType}\" is not supported");
 
-        using var reader = new StreamReader(source, Encoding.UTF8);
-        using var writer = new StreamWriter(destination, Encoding.UTF8) { AutoFlush = true, };
+        using var reader = new StreamReader(source, leaveOpen: true);
+        using var writer = new StreamWriter(destination, leaveOpen: true) { AutoFlush = true, };
         var html = Markdown.ToHtml(await reader.ReadToEndAsync());
         await writer.WriteAsync(html);
     }
