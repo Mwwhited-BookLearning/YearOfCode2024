@@ -1,9 +1,7 @@
-using Microsoft.AspNetCore.Mvc.Controllers;
-using Microsoft.Extensions.DependencyInjection.Extensions;
+using OobDev.Documents;
 using OobDev.Search.Azure;
 using OobDev.Search.Ollama;
 using OobDev.Search.OpenSearch;
-using OobDev.Search.Providers;
 using OobDev.Search.Qdrant;
 using OobDev.Search.Sbert;
 
@@ -17,6 +15,11 @@ public class Program
 
         builder.Services
                .AddOptions()
+
+               .TryAddDocumentServices()
+               .TryAddMarkdigServices()
+               .TryAddDocumentServices()
+
                .TryAddSearchServices()
                .TryAddOllamaServices()
                .TryAddAzureServices(builder.Configuration)

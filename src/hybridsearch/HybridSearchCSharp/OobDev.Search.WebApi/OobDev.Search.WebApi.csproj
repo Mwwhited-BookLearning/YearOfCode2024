@@ -11,6 +11,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\OobDev.Documents.Markdig\OobDev.Documents.Markdig.csproj" />
+    <ProjectReference Include="..\OobDev.Documents.WkHtmlToPdf\OobDev.Documents.WkHtmlToPdf.csproj" />
+    <ProjectReference Include="..\OobDev.Documents\OobDev.Documents.csproj" />
     <ProjectReference Include="..\OobDev.Search.Azure\OobDev.Search.Azure.csproj" />
     <ProjectReference Include="..\OobDev.Search.Neo4j\OobDev.Search.Neo4j.csproj" />
     <ProjectReference Include="..\OobDev.Search.Ollama\OobDev.Search.Ollama.csproj" />

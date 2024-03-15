@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using OobDev.Documents;
 using OobDev.Search.Models;
+using System.Net;
 
 namespace OobDev.Search.WebApi.Controllers;
 
@@ -7,26 +9,20 @@ namespace OobDev.Search.WebApi.Controllers;
 public class FileController : Controller
 {
     private readonly ISearchProvider _search;
+    private readonly IDocumentConversion _document;
 
     public FileController(
-        ISearchProvider search
+        ISearchProvider search,
+        IDocumentConversion document
         )
     {
         _search = search;
+        _document = document;
     }
 
-
-    //public Task<ContentReference?> DownloadAsync(string file)
-    //{
-    //    throw new NotImplementedException();
-    //}
-
-    //public Task<ContentReference?> SummaryAsync(string file)
-    //{
-    //    throw new NotImplementedException();
-    //}
-
     [HttpGet("{*file}")]
+    [ProducesResponseType(typeof(FileStreamResult), (int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.NotFound)]
     public async Task<IActionResult> Download(string file) =>
         await _search.DownloadAsync(file) switch
         {
@@ -34,8 +30,37 @@ public class FileController : Controller
             ContentReference blob => File(blob.Content, blob.ContentType, blob.FileName)
         };
 
-    //[Route("md2html/{*file}")]
-    //public async Task<IActionResult> Md2Html(string file)
+    [Route("{*file}")]
+    public async Task<IActionResult> Html(string file) =>
+        await _search.DownloadAsync(file) switch
+        {
+            null => NotFound(),
+            ContentReference blob => File(
+                await ConvertToAsync(blob.Content, blob.ContentType, "text/html"),
+                "text/html",
+                Path.ChangeExtension(blob.FileName, ".html"))
+        };
+
+    [Route("{*file}")]
+    public async Task<IActionResult> Pdf(string file) =>
+        await _search.DownloadAsync(file) switch
+        {
+            null => NotFound(),
+            ContentReference blob => File(
+                await ConvertToAsync(blob.Content, blob.ContentType, "application/pdf"),
+                "application/pdf",
+                Path.ChangeExtension(blob.FileName, ".pdf"))
+        };
+
+    private async Task<Stream> ConvertToAsync(Stream source, string sourceType, string destinationType)
+    {
+        var ms = new MemoryStream();
+        await _document.ConvertAsync(source, sourceType, ms, destinationType);
+        ms.Position = 0;
+        return ms;
+    }
+
+
     //{
     //    var result = await _blob.GetContentAsync(HttpUtility.UrlDecode(file));
     //    if (result == null)
@@ -53,6 +78,8 @@ public class FileController : Controller
     //}
 
     [HttpGet("{*file}")]
+    [ProducesResponseType(typeof(FileStreamResult), (int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.NotFound)]
     public async Task<IActionResult> Summary(string file) =>
         await _search.SummaryAsync(file) switch
         {

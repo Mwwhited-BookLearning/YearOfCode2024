@@ -3,35 +3,37 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34622.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OobDev.Search.Abstractions", "OobDev.Search.Abstractions\OobDev.Search.Abstractions.csproj", "{3AE45B89-B98D-4D98-82BE-D778F877BF39}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OobDev.Search.Abstractions", "OobDev.Search.Abstractions\OobDev.Search.Abstractions.csproj", "{3AE45B89-B98D-4D98-82BE-D778F877BF39}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OobDev.Search", "OobDev.Search\OobDev.Search.csproj", "{34F24953-6944-4AC6-820C-5FE2D9D2695A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OobDev.Search", "OobDev.Search\OobDev.Search.csproj", "{34F24953-6944-4AC6-820C-5FE2D9D2695A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OobDev.Search.Tests", "OobDev.Search.Tests\OobDev.Search.Tests.csproj", "{746702EC-445C-4F1B-9DD4-6DB323D34057}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OobDev.Search.Tests", "OobDev.Search.Tests\OobDev.Search.Tests.csproj", "{746702EC-445C-4F1B-9DD4-6DB323D34057}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotesAndScripts", "NotesAndScripts\NotesAndScripts.csproj", "{D9A5339B-503F-4A20-954E-425B5E6AE1FC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NotesAndScripts", "NotesAndScripts\NotesAndScripts.csproj", "{D9A5339B-503F-4A20-954E-425B5E6AE1FC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OobDev.Search.Qdrant", "OobDev.Search.Qdrant\OobDev.Search.Qdrant.csproj", "{8A78EEC7-7510-438C-A8EA-E322B09619F4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OobDev.Search.Qdrant", "OobDev.Search.Qdrant\OobDev.Search.Qdrant.csproj", "{8A78EEC7-7510-438C-A8EA-E322B09619F4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OobDev.Search.Ollama", "OobDev.Search.Ollama\OobDev.Search.Ollama.csproj", "{02F254FF-F7FB-4167-B294-5E05E165CDB1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OobDev.Search.Ollama", "OobDev.Search.Ollama\OobDev.Search.Ollama.csproj", "{02F254FF-F7FB-4167-B294-5E05E165CDB1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Externals", "Externals", "{908BA3D7-0409-453E-993D-6F3A15CA6E49}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OobDev.Search.Neo4j", "OobDev.Search.Neo4j\OobDev.Search.Neo4j.csproj", "{D6B8DAA5-18DA-461D-97D6-F58AF0FCBFD1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OobDev.Search.Neo4j", "OobDev.Search.Neo4j\OobDev.Search.Neo4j.csproj", "{D6B8DAA5-18DA-461D-97D6-F58AF0FCBFD1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OobDev.Search.OpenSearch", "OobDev.Search.OpenSearch\OobDev.Search.OpenSearch.csproj", "{FA02D143-96C9-4D5D-AB70-F40C8F274E02}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OobDev.Search.OpenSearch", "OobDev.Search.OpenSearch\OobDev.Search.OpenSearch.csproj", "{FA02D143-96C9-4D5D-AB70-F40C8F274E02}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OobDev.Search.Azure", "OobDev.Search.Azure\OobDev.Search.Azure.csproj", "{AEC73805-174A-41C0-91DB-0B9A78EAB751}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OobDev.Search.Azure", "OobDev.Search.Azure\OobDev.Search.Azure.csproj", "{AEC73805-174A-41C0-91DB-0B9A78EAB751}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OobDev.Search.WebApi", "OobDev.Search.WebApi\OobDev.Search.WebApi.csproj", "{494342F1-AEC0-4572-A4B2-38F08558571F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OobDev.Search.WebApi", "OobDev.Search.WebApi\OobDev.Search.WebApi.csproj", "{494342F1-AEC0-4572-A4B2-38F08558571F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OobDev.Search.Sbert", "OobDev.Search.Sbert\OobDev.Search.Sbert.csproj", "{8F655D90-8ACE-4B95-8A7A-F4EF3C1B2737}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OobDev.Search.Sbert", "OobDev.Search.Sbert\OobDev.Search.Sbert.csproj", "{8F655D90-8ACE-4B95-8A7A-F4EF3C1B2737}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OobDev.Documents", "OobDev.Documents\OobDev.Documents.csproj", "{3A67FC45-0272-4901-AA3B-A08891F37957}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OobDev.Documents", "OobDev.Documents\OobDev.Documents.csproj", "{3A67FC45-0272-4901-AA3B-A08891F37957}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OobDev.Documents.Abstractions", "OobDev.Documents.Abstractions\OobDev.Documents.Abstractions.csproj", "{72CA77C9-76B3-4FF4-A660-E2DE5BF80A01}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OobDev.Documents.Abstractions", "OobDev.Documents.Abstractions\OobDev.Documents.Abstractions.csproj", "{72CA77C9-76B3-4FF4-A660-E2DE5BF80A01}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OobDev.Documents.Markdig", "OobDev.Documents.Markdig\OobDev.Documents.Markdig.csproj", "{1504BA16-7A5D-4363-B518-B2AE491738CB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OobDev.Documents.Markdig", "OobDev.Documents.Markdig\OobDev.Documents.Markdig.csproj", "{1504BA16-7A5D-4363-B518-B2AE491738CB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OobDev.Documents.WkHtmlToPdf", "OobDev.Documents.WkHtmlToPdf\OobDev.Documents.WkHtmlToPdf.csproj", "{1728F39A-934A-43DC-8131-4C2B5CCE088F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -95,6 +97,10 @@ Global
 		{1504BA16-7A5D-4363-B518-B2AE491738CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1504BA16-7A5D-4363-B518-B2AE491738CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1504BA16-7A5D-4363-B518-B2AE491738CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1728F39A-934A-43DC-8131-4C2B5CCE088F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1728F39A-934A-43DC-8131-4C2B5CCE088F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1728F39A-934A-43DC-8131-4C2B5CCE088F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1728F39A-934A-43DC-8131-4C2B5CCE088F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -107,6 +113,7 @@ Global
 		{AEC73805-174A-41C0-91DB-0B9A78EAB751} = {908BA3D7-0409-453E-993D-6F3A15CA6E49}
 		{8F655D90-8ACE-4B95-8A7A-F4EF3C1B2737} = {908BA3D7-0409-453E-993D-6F3A15CA6E49}
 		{1504BA16-7A5D-4363-B518-B2AE491738CB} = {908BA3D7-0409-453E-993D-6F3A15CA6E49}
+		{1728F39A-934A-43DC-8131-4C2B5CCE088F} = {908BA3D7-0409-453E-993D-6F3A15CA6E49}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {111A2F87-F25A-4886-A789-B15C7423B029}
