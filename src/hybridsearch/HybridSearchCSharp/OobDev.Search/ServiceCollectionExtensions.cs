@@ -13,6 +13,8 @@ public static class ServiceCollectionExtensions
         services.TryAddTransient<ISearchContent<SearchResultModel>, HybridProvider>();
         services.TryAddKeyedTransient<ISearchContent<SearchResultModel>, HybridProvider>(SearchTypes.Hybrid);
 
+        services.TryAddTransient<ISearchProvider, SearchProvider>();
+
         return services;
     }
 }

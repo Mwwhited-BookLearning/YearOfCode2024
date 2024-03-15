@@ -1,7 +1,9 @@
+using Microsoft.AspNetCore.Mvc.Controllers;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using OobDev.Search.Azure;
-using OobDev.Search.Models;
 using OobDev.Search.Ollama;
 using OobDev.Search.OpenSearch;
+using OobDev.Search.Providers;
 using OobDev.Search.Qdrant;
 using OobDev.Search.Sbert;
 
@@ -22,18 +24,6 @@ public class Program
                .TryAddQdrantServices(builder.Configuration)
                .TryAddSbertServices(builder.Configuration)
             ;
-
-        var sp = builder.Services.BuildServiceProvider();
-        var x = sp.GetRequiredKeyedService<ISearchContent<SearchResultModel>>(SearchTypes.Semantic);
-        var y = 1234;
-
-        //    / [FromKeyedServices(SearchTypes.Semantic)] ISearchContent<SearchResultModel> semantic,
-        //[FromKeyedServices(SearchTypes.Lexical)] ISearchContent<SearchResultModel> lexical,
-        //[FromKeyedServices(SearchTypes.Hybrid)] ISearchContent<SearchResultModel> hybrid,
-        //IEmbeddingProvider embedding,
-        //ISearchContent<SearchResultModel> contentStore,
-        //IGetContent< ContentReference > content,
-        //IGetSummary<ContentReference> summary
 
         // Add services to the container.
 

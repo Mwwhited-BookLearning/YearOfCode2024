@@ -24,8 +24,6 @@ public class OpenSearchClientFactory : IOpenSearchClientFactory
             .ThrowExceptions(true)
             ;
 
-
-
         if (!string.IsNullOrWhiteSpace(_config.Value.UserName) && !string.IsNullOrWhiteSpace(_config.Value.Password))
         {
             connection.BasicAuthentication(_config.Value.UserName, _config.Value.Password);
