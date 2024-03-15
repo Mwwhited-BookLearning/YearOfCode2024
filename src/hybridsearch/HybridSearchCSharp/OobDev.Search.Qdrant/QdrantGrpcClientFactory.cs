@@ -1,9 +1,16 @@
-﻿using Qdrant.Client.Grpc;
+﻿using Microsoft.Extensions.Options;
+using Qdrant.Client.Grpc;
 
 namespace OobDev.Search.Qdrant;
 
-public class QdrantGrpcClientFactory
+public class QdrantGrpcClientFactory : IQdrantGrpcClientFactory
 {
-    public QdrantGrpcClient Build(string hostName, int port = 6334) =>
-         new QdrantGrpcClient(QdrantChannel.ForAddress($"http://{hostName}:{port}"));
+    private readonly IOptions<QdrantOptions> _options;
+
+    public QdrantGrpcClientFactory(IOptions<QdrantOptions> options)
+    {
+        _options = options;
+    }
+
+    public QdrantGrpcClient Create() => new(QdrantChannel.ForAddress(_options.Value.Url));
 }

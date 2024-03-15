@@ -8,7 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace OobDev.Search.Providers;
+namespace OobDev.Search.Qdrant;
 
 public class SemanticStoreProvider :
     IStoreContent,
@@ -23,8 +23,8 @@ public class SemanticStoreProvider :
     public SemanticStoreProvider(
         QdrantGrpcClient vectoreStore,
         IEmbeddingProvider embedding,
-        string hostName, string storeName,
-        bool forSummary = false
+        string storeName,
+        bool forSummary
         )
     {
         _embedding = embedding;
@@ -33,7 +33,6 @@ public class SemanticStoreProvider :
         _forSummary = forSummary;
 
         _vectoreStore = vectoreStore;
-        Console.WriteLine($"connect to vectors");
         var vectorCollections = _vectoreStore.Collections.List(new ListCollectionsRequest { });
         if (!vectorCollections.Collections.Any(c => c.Name == _collectionName))
             _vectoreStore.Collections.Create(new CreateCollection

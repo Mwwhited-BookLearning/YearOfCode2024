@@ -8,8 +8,9 @@ namespace OobDev.Search.OpenSearch;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection TryAddOpenSearchServices(this IServiceCollection services)
+    public static IServiceCollection TryAddOpenSearchServices(this IServiceCollection services, IConfiguration configuration)
     {
+        services.Configure<OpenSearchOptions>(options => configuration.Bind(nameof(OpenSearchOptions), options));
         services.Configure<OpenSearchOptions>(nameof(OpenSearchOptions), opt => { });
         services.TryAddTransient<IOpenSearchClientFactory, OpenSearchClientFactory>();
         services.TryAddTransient(sp => sp.GetRequiredService<IOpenSearchClientFactory>().Create());

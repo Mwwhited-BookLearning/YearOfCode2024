@@ -1,13 +1,19 @@
-﻿using System.Text.Json.Nodes;
+﻿using Microsoft.Extensions.Options;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace OobDev.Search.Sbert;
 
-public class SBertClient(
-        string baseUrl
-    )
+public class SBertClient
 {
-    private readonly HttpClient _httpClient = new() { BaseAddress = new Uri(baseUrl) };
+    private readonly IOptions<SBertOptions> _options;
+    private readonly HttpClient _httpClient; //TODO: this should be done differently
+
+    public SBertClient(IOptions<SBertOptions> options)
+    {
+        _options = options;
+        _httpClient = new() { BaseAddress = new Uri(_options.Value.Url) };
+    }
 
     public async Task<float[]> GetEmbeddingAsync(string input)
     {

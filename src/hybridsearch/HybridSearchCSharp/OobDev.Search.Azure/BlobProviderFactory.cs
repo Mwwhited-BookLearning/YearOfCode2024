@@ -11,6 +11,15 @@ public class BlobProviderFactory : IBlobProviderFactory
     private readonly IServiceProvider _serviceProvider;
     private readonly IOptions<AzureBlobProviderOptions> _config;
 
+    public BlobProviderFactory(
+        IServiceProvider serviceProvider,
+        IOptions<AzureBlobProviderOptions> config
+        )
+    {
+        _serviceProvider = serviceProvider;
+        _config = config;
+    }
+
     public BlobProvider Create(string collectionName) =>
         ActivatorUtilities.CreateInstance<BlobProvider>(_serviceProvider, collectionName switch
         {
