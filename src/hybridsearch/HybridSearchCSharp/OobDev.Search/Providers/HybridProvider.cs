@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using OobDev.Search.Linq;
+﻿using OobDev.Search.Linq;
 using OobDev.Search.Models;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,14 +11,14 @@ public class HybridProvider : ISearchContent<SearchResultModel>
     private readonly ISearchContent<SearchResultModel> _lexicalProvider;
     private readonly ISearchContent<SearchResultModel> _semanticStoreProvider;
 
-    public HybridProvider(
-        [FromKeyedServices(SearchTypes.Lexical)] ISearchContent<SearchResultModel> lexicalProvider,
-        [FromKeyedServices(SearchTypes.Semantic)] ISearchContent<SearchResultModel> semanticStoreProvider
-        )
-    {
-        _lexicalProvider = lexicalProvider;
-        _semanticStoreProvider = semanticStoreProvider;
-    }
+    //public HybridProvider(
+    //    [FromKeyedServices(SearchTypes.Lexical)] ISearchContent<SearchResultModel> lexicalProvider,
+    //    [FromKeyedServices(SearchTypes.Semantic)] ISearchContent<SearchResultModel> semanticStoreProvider
+    //    )
+    //{
+    //    _lexicalProvider = lexicalProvider;
+    //    _semanticStoreProvider = semanticStoreProvider;
+    //}
 
     public async IAsyncEnumerable<SearchResultModel> QueryAsync(string? queryString, int limit = 25, int page = 0)
     {

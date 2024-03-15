@@ -1,24 +1,36 @@
-﻿using OpenSearch.Net;
+﻿using Microsoft.Extensions.Options;
+using OpenSearch.Net;
 using System;
 
 namespace OobDev.Search.OpenSearch;
 
-public class OpenSearchClientFactory
+public class OpenSearchClientFactory : IOpenSearchClientFactory
 {
-    public IOpenSearchLowLevelClient GetClient(
-        string hostName,
-        string username, string password,
-        int port = 9200
+    private readonly IOptions<OpenSearchOptions> _config;
+
+    public OpenSearchClientFactory(
+        IOptions<OpenSearchOptions> config
         )
     {
+        _config = config;
+    }
+
+    public IOpenSearchLowLevelClient Create()
+    {
         var connection = new ConnectionConfiguration(
-                new Uri($"http://{hostName}:{port}")
+                new Uri($"http://{_config.Value.HostName}:{_config.Value.Port}")
             )
-            .BasicAuthentication(username, password)
             .EnableHttpCompression(true)
             .ThrowExceptions(true)
-            //.PrettyJson()
             ;
+
+
+
+        if (!string.IsNullOrWhiteSpace(_config.Value.UserName) && !string.IsNullOrWhiteSpace(_config.Value.Password))
+        {
+            connection.BasicAuthentication(_config.Value.UserName, _config.Value.Password);
+        }
+
         var client = new OpenSearchLowLevelClient(connection);
         return client;
     }

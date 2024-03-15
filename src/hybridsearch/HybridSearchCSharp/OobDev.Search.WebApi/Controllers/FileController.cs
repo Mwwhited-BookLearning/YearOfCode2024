@@ -1,55 +1,43 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OobDev.Search.Linq;
 using OobDev.Search.Models;
-using OobDev.Search.Providers;
 using System.Web;
 
 namespace OobDev.Search.WebApi.Controllers;
 
+[Route("[Controller]/[Action]")]
 public class FileController : Controller
 {
-    private const string storeName = "docs";
-    private const string hostName = "192.168.1.170";
-
-    private readonly BlobProvider _blob;
-    private readonly BlobProvider _sblob;
-
     private readonly ISearchContent<SearchResultModel> _semantic;
     private readonly ISearchContent<SearchResultModel> _lexical;
     private readonly ISearchContent<SearchResultModel> _hybrid;
     private readonly IEmbeddingProvider _embedding;
+    private readonly ISearchContent<SearchResultModel> _contentStore;
+    private readonly IGetContent<ContentReference> _content;
+    private readonly IGetSummary<ContentReference> _summary;
 
     public FileController(
         [FromKeyedServices(SearchTypes.Semantic)] ISearchContent<SearchResultModel> semantic,
         [FromKeyedServices(SearchTypes.Lexical)] ISearchContent<SearchResultModel> lexical,
         [FromKeyedServices(SearchTypes.Hybrid)] ISearchContent<SearchResultModel> hybrid,
-        IEmbeddingProvider embedding
+        IEmbeddingProvider embedding,
+        ISearchContent<SearchResultModel> contentStore,
+        IGetContent<ContentReference> content,
+        IGetSummary<ContentReference> summary
         )
     {
-        _blob = new BlobProvider(
-            connectionString: "DefaultEndpointsProtocol=https;" +
-                "AccountName=devstoreaccount1;" +
-                "AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;" +
-                $"BlobEndpoint=http://{hostName}:10000/devstoreaccount1;",
-            storeName: storeName
-                );
-        _sblob = new BlobProvider(
-            connectionString: "DefaultEndpointsProtocol=https;" +
-                "AccountName=devstoreaccount1;" +
-                "AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;" +
-                $"BlobEndpoint=http://{hostName}:10000/devstoreaccount1;",
-            storeName: "summary"
-                );
-
         _semantic = semantic;
         _lexical = lexical;
         _hybrid = hybrid;
-        _embedding= embedding;
+        _embedding = embedding;
+        _contentStore = contentStore;
+        _content = content;
+        _summary = summary;
     }
 
-    [Route("download/{*file}")]
+    [HttpGet("{*file}")]
     public async Task<IActionResult> Download(string file) =>
-        await _blob.GetContentAsync(HttpUtility.UrlDecode(file)) switch
+        await _content.GetContentAsync(HttpUtility.UrlDecode(file)) switch
         {
             null => NotFound(),
             ContentReference blob => File(blob.Content, blob.ContentType, blob.FileName)
@@ -73,22 +61,25 @@ public class FileController : Controller
     //    return File(ms, "text/html");
     //}
 
-    [Route("summary/{*file}")]
+    [HttpGet("{*file}")]
     public async Task<IActionResult> Summary(string file) =>
-        await _sblob.GetContentAsync(HttpUtility.UrlDecode(file)) switch
+        await _summary.GetSummaryAsync(HttpUtility.UrlDecode(file)) switch
         {
             null => NotFound(),
             ContentReference blob => File(blob.Content, blob.ContentType, blob.FileName)
         };
 
-    public async Task<IActionResult> Index()
+    [HttpGet]
+    public async Task<IActionResult> List()
     {
-        var blobs = await _blob.QueryAsync("").ToReadOnlyCollectionAsync();
+        var blobs = await _contentStore.QueryAsync("").ToReadOnlyCollectionAsync();
         return View(blobs);
     }
 
+    [HttpGet]
     public async Task<IActionResult> Embed(string text) => Json(await _embedding.GetEmbeddingAsync(text));
 
+    [HttpGet]
     public async Task<IActionResult> SemanticSearch(string? query = default, int limit = 10)
     {
         ViewData[nameof(query)] = query;
@@ -97,6 +88,7 @@ public class FileController : Controller
         return View("SearchResults", Upgrade(results));
     }
 
+    [HttpGet]
     public async Task<IActionResult> LexicalSearch(string? query = default, int limit = 10)
     {
         ViewData[nameof(query)] = query;
@@ -105,6 +97,7 @@ public class FileController : Controller
         return View("SearchResults", Upgrade(results));
     }
 
+    [HttpGet]
     public async Task<IActionResult> HybridSearch(string? query = default, int limit = 10)
     {
         ViewData[nameof(query)] = query;
@@ -122,12 +115,12 @@ public class FileController : Controller
             PathHash = item.PathHash,
             Score = item.Score,
             Type = item.Type,
-            Summary = GetContent(item.File) ?? "",
+            Summary = GetSummary(item.File) ?? "",
         };
 
-    private string? GetContent(string file)
+    private string? GetSummary(string file)
     {
-        var result = _sblob.GetContentAsync(file).Result;
+        var result = _summary.GetSummaryAsync(file).Result;
         if (result == null)
             return null;
         using var stream = result.Content;

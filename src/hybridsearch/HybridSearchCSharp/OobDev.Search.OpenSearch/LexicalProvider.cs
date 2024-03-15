@@ -1,34 +1,28 @@
-﻿using OobDev.Search.Models;
+﻿using Microsoft.Extensions.Options;
+using OobDev.Search.Models;
 using OpenSearch.Net;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
-using SearchTypes = OobDev.Search.Models.SearchTypes;
 
 namespace OobDev.Search.OpenSearch;
-
 public class LexicalProvider :
     IStoreContent,
     ISearchContent<SearchResultModel>,
     ISearchContent<JsonNode>
 {
-    private readonly IOpenSearchLowLevelClient _opensearch;
-    private readonly string _storeName;
+    private readonly IOpenSearchLowLevelClient _client;
+    private readonly IOptions<OpenSearchOptions> _config;
 
     public LexicalProvider(
-        string hostName,
-        string userName, string password,
-        string storeName,
-        int port = 9200
+        IOptions<OpenSearchOptions> config,
+        IOpenSearchLowLevelClient client
         )
     {
-        _storeName = storeName;
-
-        var lexicalFactory = new OpenSearchClientFactory();
-        _opensearch = lexicalFactory.GetClient(hostName, userName, password, port);
-        Console.WriteLine($"connect to full-text");
+        _config = config;
+        _client = client;
     }
 
     public async IAsyncEnumerable<SearchResultModel> QueryAsync(string? queryString, int limit = 25, int page = 0)
@@ -50,7 +44,7 @@ public class LexicalProvider :
             yield break;
 
         // https://opensearch.org/docs/latest/query-dsl/full-text/index/
-        var lookupResult = await _opensearch.SearchAsync<StringResponse>(_storeName,
+        var lookupResult = await _client.SearchAsync<StringResponse>(_config.Value.IndexName,
            PostData.Serializable(new
            {
                query = new
@@ -73,7 +67,7 @@ public class LexicalProvider :
 
     public async Task<bool> TryStoreAsync(string full, string file, string pathHash)
     {
-        var lookupResult = await _opensearch.SearchAsync<StringResponse>(_storeName,
+        var lookupResult = await _client.SearchAsync<StringResponse>(_config.Value.IndexName,
            PostData.Serializable(new
            {
                query = new
@@ -92,10 +86,8 @@ public class LexicalProvider :
         if (lookupJson?["hits"]?["hits"] is JsonArray arr && arr.Count > 0)
             return false;
 
-        Console.WriteLine($"store -> {file}");
-
         var id = Guid.NewGuid().ToString();
-        var result = await _opensearch.IndexAsync<StringResponse>(_storeName, id, PostData.Serializable(new
+        _ = await _client.IndexAsync<StringResponse>(_config.Value.IndexName, id, PostData.Serializable(new
         {
             Id = id,
 

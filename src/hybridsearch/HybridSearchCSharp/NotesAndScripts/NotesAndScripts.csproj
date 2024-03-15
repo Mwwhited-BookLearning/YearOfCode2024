@@ -5,16 +5,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="Containers\opensearch.bat" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Include="Containers\opensearch.bat" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Designs\" />
-  </ItemGroup>
-
 </Project>

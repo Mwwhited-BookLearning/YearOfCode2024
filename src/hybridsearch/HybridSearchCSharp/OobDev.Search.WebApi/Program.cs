@@ -12,6 +12,7 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         builder.Services
+               .AddOptions()
                .TryAddSearchServices()
                .TryAddOllamaServices()
                .TryAddAzureServices()

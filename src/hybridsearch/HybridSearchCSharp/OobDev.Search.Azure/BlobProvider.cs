@@ -1,21 +1,22 @@
 ﻿using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using OobDev.Search.Models;
+using OobDev.Search.Linq;
 
 namespace OobDev.Search.Providers;
 
-public class BlobProvider : 
-    IStoreContent, 
-    ISearchContent<BlobItem>, 
-    IGetContent<ContentReference>
+public class BlobProvider :
+    IStoreContent,
+    ISearchContent<BlobItem>,
+    ISearchContent<SearchResultModel>,
+    IGetContent<ContentReference>,
+    IGetSummary<ContentReference>
 {
     private readonly BlobContainerClient _blockBlobClient;
 
-    public BlobProvider(string connectionString, string storeName)
+    public BlobProvider(BlobServiceClient client, string collectionName)
     {
-        var blobStore = new BlobServiceClient(connectionString);
-        Console.WriteLine($"connect to blobs");
-        _blockBlobClient = blobStore.GetBlobContainerClient(storeName);
+        _blockBlobClient = client.GetBlobContainerClient(collectionName);
         _blockBlobClient.CreateIfNotExists();
     }
 
@@ -35,7 +36,19 @@ public class BlobProvider :
         };
     }
 
-    public IAsyncEnumerable<BlobItem> QueryAsync(string? queryString, int limit = 25, int page = 0) =>
+    public Task<ContentReference?> GetSummaryAsync(string file) => GetContentAsync(file);
+
+    public IAsyncEnumerable<SearchResultModel> QueryAsync(string? queryString, int limit = 25, int page = 0) =>
+        from item in ((ISearchContent<BlobItem>)this).QueryAsync(queryString, limit, page)
+        select new SearchResultModel
+        {
+            Content = "", //TODO: do something else here
+            File = item.Metadata["File"],
+            PathHash = item.Metadata["PathHash"],
+            Score = 1,
+            Type = SearchTypes.None,
+        };
+    IAsyncEnumerable<BlobItem> ISearchContent<BlobItem>.QueryAsync(string? queryString, int limit = 25, int page = 0) =>
         _blockBlobClient.GetBlobsAsync(); //todo: add query but who really cares
 
     public async Task<bool> TryStoreAsync(string full, string file, string pathHash)
@@ -61,4 +74,5 @@ public class BlobProvider :
 
         return false;
     }
+
 }
