@@ -30,15 +30,15 @@ public class DocumentConversion : IDocumentConversion
         else if (steps.Length == 1) await steps[0].Handler.ConvertAsync(source, sourceContentType, destination, destinationContentType);
         else
         {
-            // Framework/BuildExtensions.md
-            var temp = new MemoryStream();
+            MemoryStream? temp = null;
             foreach (var step in steps)
             {
+                temp = new MemoryStream();
                 await step.Handler.ConvertAsync(source, step.SourceContentType, temp, step.DestinationContentType);
                 temp.Position = 0;
                 source = temp;
             }
-            await temp.CopyToAsync(destination);
+            await (temp ?? source).CopyToAsync(destination);
             destination.Position = 0;
         }
     }
