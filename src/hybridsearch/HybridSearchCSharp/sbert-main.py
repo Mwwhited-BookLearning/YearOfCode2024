@@ -71,6 +71,6 @@ def generate_multiple_embeddings():
     return jsonify(embeddings=embeddings_list)
 
 if __name__ == '__main__':
-    #from waitress import serve
-    #serve(app, host="0.0.0.0", port=5000)
-    app.run(host='0.0.0.0', port=5080)
+    from waitress import serve
+    serve(app, host="0.0.0.0", port=5000)
+    #app.run(host='0.0.0.0', port=5080)
