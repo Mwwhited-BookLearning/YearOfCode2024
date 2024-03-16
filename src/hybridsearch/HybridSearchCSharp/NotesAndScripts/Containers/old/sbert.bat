@@ -5,6 +5,6 @@ docker build ^
 .
 
 docker run --rm -it ^
--p 5080:5000 ^
+-p 5080:5080 ^
 --gpus all ^
 oobdev/sbert

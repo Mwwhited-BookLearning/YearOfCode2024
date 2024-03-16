@@ -1,0 +1,7 @@
+FROM opensearchproject/opensearch:latest
+
+ENV discovery.type=single-node
+ENV plugins.security.disabled=true
+ENV OPENSEARCH_INITIAL_ADMIN_PASSWORD=Y_b5nK;~>B&C_Z-UQp(GT-
+
+EXPOSE 9200 9600
