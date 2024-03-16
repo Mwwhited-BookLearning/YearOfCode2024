@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -15,6 +16,8 @@ public class DocumentConversion : IDocumentConversion
         _chain = chain;
     }
 
+    private readonly Dictionary<(string source, string destination), ChainStep[]> _cache = [];
+
     public async Task ConvertAsync(Stream source, string sourceContentType, Stream destination, string destinationContentType)
     {
         ArgumentNullException.ThrowIfNull(source, nameof(source));
@@ -25,7 +28,17 @@ public class DocumentConversion : IDocumentConversion
         if (string.Equals(sourceContentType, destinationContentType, StringComparison.OrdinalIgnoreCase))
             await source.CopyToAsync(destination);
 
-        var steps = _chain.Steps(sourceContentType, destinationContentType);
+        ChainStep[] steps;
+        if (_cache.TryGetValue((sourceContentType, destinationContentType), out var cached))
+        {
+            steps = cached;
+        }
+        else
+        {
+            steps = _chain.Steps(sourceContentType, destinationContentType);
+            _cache.TryAdd((sourceContentType, destinationContentType), steps);
+        }
+
         if (steps.Length == 0) throw new NotSupportedException($"Conversion from \"{sourceContentType}\" to \"{destinationContentType}\" is not supported");
         else if (steps.Length == 1) await steps[0].Handler.ConvertAsync(source, sourceContentType, destination, destinationContentType);
         else
