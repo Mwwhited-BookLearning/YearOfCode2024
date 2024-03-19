@@ -1,28 +1,35 @@
 package fileController
 
 import (
+	"encoding/json"
+
 	"github.com/gorilla/mux"
+
 	"hybrid-search/webapi/controllers"
 	"hybrid-search/webapi/providers"
+
 	"log"
 	"net/http"
-	"strings"
 	"strconv"
+	"strings"
 )
 
 func Build(
 	router *mux.Router,
 	hybrid providers.HybridSearchProvider,
 	lexical providers.LexicalSearchProvider,
-	semantic providers.SemanticSearchProvider) FileController {
+	semantic providers.SemanticSearchProvider,
+	embedding providers.EmbeddingProvider) FileController {
 	// https://github.com/gorilla/mux
 
 	service := FileController{
 		Router: router,
 
-		HybridSearch:   hybrid,
-		LexicalSearch:  lexical,
-		SemanticSearch: semantic,
+		HybridSearchProvider:   hybrid,
+		LexicalSearchProvider:  lexical,
+		SemanticSearchProvider: semantic,
+
+		EmbeddingProvider: embedding,
 	}
 
 	actions := []controllers.WebAction{
@@ -31,7 +38,11 @@ func Build(
 		{Pattern: "/file/html", Handler: service.Html, Method: "GET", RouteType: controllers.RouteTypePathFilter},
 		{Pattern: "/file/pdf", Handler: service.Pdf, Method: "GET", RouteType: controllers.RouteTypePathFilter},
 		{Pattern: "/file/summary", Handler: service.Summary, Method: "GET", RouteType: controllers.RouteTypePathFilter},
+
+		{Pattern: "/file/list", Handler: service.List, Method: "GET", RouteType: controllers.RouteTypeQuery},
+
 		{Pattern: "/file/embed", Handler: service.Embed, Method: "GET", RouteType: controllers.RouteTypeQuery},
+
 		{Pattern: "/file/semantic", Handler: service.Semantic, Method: "GET", RouteType: controllers.RouteTypeQuery},
 		{Pattern: "/file/lexical", Handler: service.Lexical, Method: "GET", RouteType: controllers.RouteTypeQuery},
 		{Pattern: "/file/hybrid", Handler: service.Hybrid, Method: "GET", RouteType: controllers.RouteTypeQuery},
@@ -83,26 +94,54 @@ func (ctrl FileController) Summary(writer http.ResponseWriter, request *http.Req
 	log.Printf("Summary: %s", path)
 }
 
+func (ctrl FileController) List(writer http.ResponseWriter, request *http.Request) {
+	log.Printf("List")
+}
+
 func (ctrl FileController) Embed(writer http.ResponseWriter, request *http.Request) {
 	log.Printf("Embed")
+
+	text := mux.Vars(request)["text"]
+
+	result := ctrl.EmbeddingProvider.Embed(text)
+	json.NewEncoder(writer).Encode(result)
 }
 
 func (ctrl FileController) Semantic(writer http.ResponseWriter, request *http.Request) {
 	log.Printf("Semantic")
+
+	query := mux.Vars(request)["query"]
+	limit, _ := strconv.Atoi(mux.Vars(request)["limit"])
+
+	writer.Header().Add("X-APP-query", query)
+	writer.Header().Add("X-APP-limit", strconv.Itoa(limit))
+
+	result := ctrl.SemanticSearchProvider.Search(query, limit)
+	json.NewEncoder(writer).Encode(result)
 }
 
 func (ctrl FileController) Lexical(writer http.ResponseWriter, request *http.Request) {
 	log.Printf("Lexical")
+
+	query := mux.Vars(request)["query"]
+	limit, _ := strconv.Atoi(mux.Vars(request)["limit"])
+
+	writer.Header().Add("X-APP-query", query)
+	writer.Header().Add("X-APP-limit", strconv.Itoa(limit))
+
+	result := ctrl.LexicalSearchProvider.Search(query, limit)
+	json.NewEncoder(writer).Encode(result)
 }
 
 func (ctrl FileController) Hybrid(writer http.ResponseWriter, request *http.Request) {
 	log.Printf("Hybrid")
 
-	query := "query string!"
-	limit := 1 //page length
+	query := mux.Vars(request)["query"]
+	limit, _ := strconv.Atoi(mux.Vars(request)["limit"])
 
 	writer.Header().Add("X-APP-query", query)
 	writer.Header().Add("X-APP-limit", strconv.Itoa(limit))
 
-	ctrl.HybridSearch.Search(query, limit)
+	result := ctrl.HybridSearchProvider.Search(query, limit)
+	json.NewEncoder(writer).Encode(result)
 }

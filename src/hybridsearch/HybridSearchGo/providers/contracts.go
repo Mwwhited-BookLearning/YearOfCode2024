@@ -15,3 +15,7 @@ type LexicalSearchProvider interface {
 type SemanticSearchProvider interface {
 	Search(query string, limit int) []models.SearchResultWithSummaryModel
 }
+
+type EmbeddingProvider interface {
+	Embed(text string) []float32
+}
