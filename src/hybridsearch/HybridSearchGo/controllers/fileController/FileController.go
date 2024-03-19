@@ -103,7 +103,7 @@ func (ctrl FileController) Embed(writer http.ResponseWriter, request *http.Reque
 
 	text := mux.Vars(request)["text"]
 
-	result := ctrl.EmbeddingProvider.Embed(text)
+	result, _ := ctrl.EmbeddingProvider.Embed(text)
 	json.NewEncoder(writer).Encode(result)
 }
 

@@ -17,5 +17,5 @@ type SemanticSearchProvider interface {
 }
 
 type EmbeddingProvider interface {
-	Embed(text string) []float32
+	Embed(text string) ([]float32, error)
 }
