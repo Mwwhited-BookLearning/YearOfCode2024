@@ -6,6 +6,14 @@
 * https://mariocarrion.com/2021/05/05/golang-microservices-rest-apis-versioning.html
 * https://mariocarrion.com/2021/05/09/golang-microservices-rest-apis-putting-it-all-together.html
 
+* https://eli.thegreenplace.net/2021/rest-servers-in-go-part-1-standard-library/
+* https://eli.thegreenplace.net/2021/rest-servers-in-go-part-2-using-a-router-package/
+* https://eli.thegreenplace.net/2021/rest-servers-in-go-part-3-using-a-web-framework/
+* https://eli.thegreenplace.net/2021/rest-servers-in-go-part-4-using-openapi-and-swagger/
+* https://eli.thegreenplace.net/2021/rest-servers-in-go-part-5-middleware/
+* https://eli.thegreenplace.net/2021/rest-servers-in-go-part-6-authentication/
+* https://eli.thegreenplace.net/2021/rest-servers-in-go-part-7-graphql/
+
 ## Setup dependency
 
 * https://go.dev/doc/modules/managing-dependencies
