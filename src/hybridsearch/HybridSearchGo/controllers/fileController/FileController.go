@@ -1,62 +1,53 @@
 package fileController
 
 import (
-	//"encoding/json"
+	"github.com/gorilla/mux"
+	"hybrid-search/webapi/controllers"
+	"hybrid-search/webapi/providers"
 	"log"
 	"net/http"
 	"strings"
-
-	"github.com/gorilla/mux"
+	"strconv"
 )
 
-type RouteTypes int
-
-const (
-	PathFilter RouteTypes = 0
-	Query                 = 1
-)
-
-type FileAction struct {
-	Pattern   string
-	Handler   func(http.ResponseWriter, *http.Request)
-	Method    string
-	RouteType RouteTypes
-}
-
-type FileService interface {
-	CreateRoutes() []FileAction
-	AddRoutes(routes []FileAction)
-}
-
-func ListRoutes() []FileAction {
-	return []FileAction{
-		{Pattern: "/file/download", Handler: Download, Method: "GET", RouteType: PathFilter},
-		{Pattern: "/file/text", Handler: Text, Method: "GET", RouteType: PathFilter},
-		{Pattern: "/file/html", Handler: Html, Method: "GET", RouteType: PathFilter},
-		{Pattern: "/file/pdf", Handler: Pdf, Method: "GET", RouteType: PathFilter},
-		{Pattern: "/file/summary", Handler: Summary, Method: "GET", RouteType: PathFilter},
-		{Pattern: "/file/embed", Handler: Embed, Method: "GET", RouteType: Query},
-		{Pattern: "/file/semantic", Handler: Semantic, Method: "GET", RouteType: Query},
-		{Pattern: "/file/lexical", Handler: Lexical, Method: "GET", RouteType: Query},
-		{Pattern: "/file/hybrid", Handler: Hybrid, Method: "GET", RouteType: Query},
-	}
-}
-
-func BindRoutes(router *mux.Router, routes []FileAction) {
+func Build(
+	router *mux.Router,
+	hybrid providers.HybridSearchProvider,
+	lexical providers.LexicalSearchProvider,
+	semantic providers.SemanticSearchProvider) FileController {
 	// https://github.com/gorilla/mux
-	for _, ctrl := range routes {
-		log.Printf("FileController: %s - %s", ctrl.Pattern, ctrl.Method)
-		if ctrl.RouteType == PathFilter {
+
+	service := FileController{
+		Router: router,
+
+		HybridSearch:   hybrid,
+		LexicalSearch:  lexical,
+		SemanticSearch: semantic,
+	}
+
+	actions := []controllers.WebAction{
+		{Pattern: "/file/download", Handler: service.Download, Method: "GET", RouteType: controllers.RouteTypePathFilter},
+		{Pattern: "/file/text", Handler: service.Text, Method: "GET", RouteType: controllers.RouteTypePathFilter},
+		{Pattern: "/file/html", Handler: service.Html, Method: "GET", RouteType: controllers.RouteTypePathFilter},
+		{Pattern: "/file/pdf", Handler: service.Pdf, Method: "GET", RouteType: controllers.RouteTypePathFilter},
+		{Pattern: "/file/summary", Handler: service.Summary, Method: "GET", RouteType: controllers.RouteTypePathFilter},
+		{Pattern: "/file/embed", Handler: service.Embed, Method: "GET", RouteType: controllers.RouteTypeQuery},
+		{Pattern: "/file/semantic", Handler: service.Semantic, Method: "GET", RouteType: controllers.RouteTypeQuery},
+		{Pattern: "/file/lexical", Handler: service.Lexical, Method: "GET", RouteType: controllers.RouteTypeQuery},
+		{Pattern: "/file/hybrid", Handler: service.Hybrid, Method: "GET", RouteType: controllers.RouteTypeQuery},
+	}
+	service.Actions = actions
+
+	for idx, ctrl := range service.Actions {
+		log.Printf("FileController (%v): %s - %s", idx, ctrl.Pattern, ctrl.Method)
+		if ctrl.RouteType == controllers.RouteTypePathFilter {
 			router.PathPrefix(ctrl.Pattern).HandlerFunc(ctrl.Handler)
-		} else if ctrl.RouteType == Query {
+		} else if ctrl.RouteType == controllers.RouteTypeQuery {
 			router.HandleFunc(ctrl.Pattern, ctrl.Handler)
 		}
 	}
-}
 
-func AddRoutes(router *mux.Router) {
-	routes := ListRoutes()
-	BindRoutes(router, routes)
+	return service
 }
 
 func getPath(request *http.Request, basePath string) string {
@@ -67,43 +58,51 @@ func getPath(request *http.Request, basePath string) string {
 	return path
 }
 
-func Download(writer http.ResponseWriter, request *http.Request) {
+func (ctrl FileController) Download(writer http.ResponseWriter, request *http.Request) {
 	path := getPath(request, "/file/download/")
 	log.Printf("Download: %s", path)
 }
 
-func Text(writer http.ResponseWriter, request *http.Request) {
+func (ctrl FileController) Text(writer http.ResponseWriter, request *http.Request) {
 	path := getPath(request, "/file/text/")
 	log.Printf("Text: %s", path)
 }
 
-func Html(writer http.ResponseWriter, request *http.Request) {
+func (ctrl FileController) Html(writer http.ResponseWriter, request *http.Request) {
 	path := getPath(request, "/file/html/")
 	log.Printf("Html: %s", path)
 }
 
-func Pdf(writer http.ResponseWriter, request *http.Request) {
+func (ctrl FileController) Pdf(writer http.ResponseWriter, request *http.Request) {
 	path := getPath(request, "/file/pdf/")
 	log.Printf("Pdf: %s", path)
 }
 
-func Summary(writer http.ResponseWriter, request *http.Request) {
+func (ctrl FileController) Summary(writer http.ResponseWriter, request *http.Request) {
 	path := getPath(request, "/file/summary/")
 	log.Printf("Summary: %s", path)
 }
 
-func Embed(writer http.ResponseWriter, request *http.Request) {
+func (ctrl FileController) Embed(writer http.ResponseWriter, request *http.Request) {
 	log.Printf("Embed")
 }
 
-func Semantic(writer http.ResponseWriter, request *http.Request) {
+func (ctrl FileController) Semantic(writer http.ResponseWriter, request *http.Request) {
 	log.Printf("Semantic")
 }
 
-func Lexical(writer http.ResponseWriter, request *http.Request) {
+func (ctrl FileController) Lexical(writer http.ResponseWriter, request *http.Request) {
 	log.Printf("Lexical")
 }
 
-func Hybrid(writer http.ResponseWriter, request *http.Request) {
+func (ctrl FileController) Hybrid(writer http.ResponseWriter, request *http.Request) {
 	log.Printf("Hybrid")
+
+	query := "query string!"
+	limit := 1 //page length
+
+	writer.Header().Add("X-APP-query", query)
+	writer.Header().Add("X-APP-limit", strconv.Itoa(limit))
+
+	ctrl.HybridSearch.Search(query, limit)
 }
