@@ -6,6 +6,9 @@ import (
 )
 
 func main() {
-	files.AddRoutes()
+
+	routes := files.CreateRoutes()
+	files.AddRoutes(routes)
+
 	http.ListenAndServe("0.0.0.0:3080", nil)
 }

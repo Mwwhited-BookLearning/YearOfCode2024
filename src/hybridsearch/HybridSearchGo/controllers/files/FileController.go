@@ -1,40 +1,41 @@
 package files
 
 import (
+	"log"
 	"net/http"
-	"os"
 	"strings"
 )
 
-// type Route struct {
-// 	Pattern string
-// 	Handler func(http.ResponseWriter, *http.Request)
-// }
+type Route struct {
+	Pattern string
+	Handler func(http.ResponseWriter, *http.Request)
+}
 
-// type FileController interface {
-// 	Download(writer http.ResponseWriter, request *http.Request)
-// 	Text(writer http.ResponseWriter, request *http.Request)
-// 	Html(writer http.ResponseWriter, request *http.Request)
-// 	Pdf(writer http.ResponseWriter, request *http.Request)
-// 	Summary(writer http.ResponseWriter, request *http.Request)
-// 	Embed(writer http.ResponseWriter, request *http.Request)
-// 	Semantic(writer http.ResponseWriter, request *http.Request)
-// 	Lexical(writer http.ResponseWriter, request *http.Request)
-// 	Hybrid(writer http.ResponseWriter, request *http.Request)
-// }
+type FileService interface {
+	CreateRoutes() []Route
+	AddRoutes(routes []Route)
+}
 
-func AddRoutes() {
-	http.HandleFunc("/file/download/", Download)
-	http.HandleFunc("/file/text/", Text)
-	http.HandleFunc("/file/html/", Html)
-	http.HandleFunc("/file/pdf/", Pdf)
-	http.HandleFunc("/file/summary/", Summary)
+func CreateRoutes() []Route {
+	return []Route{
+		{Pattern: "/file/download/", Handler: Download},
+		{Pattern: "/file/text/", Handler: Text},
+		{Pattern: "/file/html/", Handler: Html},
+		{Pattern: "/file/pdf/", Handler: Pdf},
+		{Pattern: "/file/summary/", Handler: Summary},
 
-	http.HandleFunc("/file/embed/", Embed)
+		{Pattern: "/file/embed/", Handler: Embed},
 
-	http.HandleFunc("/file/semantic/", Semantic)
-	http.HandleFunc("/file/lexical/", Lexical)
-	http.HandleFunc("/file/hybrid/", Hybrid)
+		{Pattern: "/file/semantic/", Handler: Semantic},
+		{Pattern: "/file/lexical/", Handler: Lexical},
+		{Pattern: "/file/hybrid/", Handler: Hybrid},
+	}
+}
+
+func AddRoutes(routes []Route) {
+	for _, ctrl := range routes {
+		http.HandleFunc(ctrl.Pattern, ctrl.Handler)
+	}
 }
 
 func getPath(request *http.Request, basePath string) string {
@@ -47,45 +48,45 @@ func getPath(request *http.Request, basePath string) string {
 
 func Download(writer http.ResponseWriter, request *http.Request) {
 	path := getPath(request, "/file/download/")
-	os.Stdout.WriteString("Download: " + path)
+	log.Printf("Download: %s", path)
 }
 
 func Text(writer http.ResponseWriter, request *http.Request) {
 	path := getPath(request, "/file/text/")
-	os.Stdout.WriteString("Text: " + path)
+	log.Printf("Text: %s", path)
 }
 
 func Html(writer http.ResponseWriter, request *http.Request) {
 	path := getPath(request, "/file/html/")
-	os.Stdout.WriteString("Html: " + path)
+	log.Printf("Html: %s", path)
 }
 
 func Pdf(writer http.ResponseWriter, request *http.Request) {
 	path := getPath(request, "/file/pdf/")
-	os.Stdout.WriteString("Pdf: " + path)
+	log.Printf("Pdf: %s", path)
 }
 
 func Summary(writer http.ResponseWriter, request *http.Request) {
 	path := getPath(request, "/file/summary/")
-	os.Stdout.WriteString("Summary: " + path)
+	log.Printf("Summary: %s", path)
 }
 
 func Embed(writer http.ResponseWriter, request *http.Request) {
 	path := getPath(request, "/file/embed/")
-	os.Stdout.WriteString("Embed: " + path)
+	log.Printf("Embed: %s", path)
 }
 
 func Semantic(writer http.ResponseWriter, request *http.Request) {
 	path := getPath(request, "/file/semantic/")
-	os.Stdout.WriteString("Semantic: " + path)
+	log.Printf("Semantic: %s", path)
 }
 
 func Lexical(writer http.ResponseWriter, request *http.Request) {
 	path := getPath(request, "/file/lexical/")
-	os.Stdout.WriteString("Lexical: " + path)
+	log.Printf("Lexical: %s", path)
 }
 
 func Hybrid(writer http.ResponseWriter, request *http.Request) {
 	path := getPath(request, "/file/hybrid/")
-	os.Stdout.WriteString("Hybrid: " + path)
+	log.Printf("Hybrid: %s", path)
 }
