@@ -1,4 +1,4 @@
-package blobs
+package models
 
 type ContentReference struct {
 	ContentType string

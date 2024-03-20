@@ -10,8 +10,8 @@ type BlobProviderInstance struct {
 	CollectionName string
 }
 
-func (provider BlobProviderInstance) GetContent(file string) ContentReference {
-	return ContentReference{}
+func (provider BlobProviderInstance) GetContent(file string) models.ContentReference {
+	return models.ContentReference{}
 }
 func (provider BlobProviderInstance) List() []models.SearchResultModel {
 	return []models.SearchResultModel{}

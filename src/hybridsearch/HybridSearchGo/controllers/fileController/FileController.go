@@ -7,7 +7,6 @@ import (
 
 	"hybrid-search/webapi/controllers"
 	"hybrid-search/webapi/providers"
-	"hybrid-search/webapi/providers/blobs"
 
 	"log"
 	"net/http"
@@ -25,8 +24,8 @@ type FileController struct {
 
 	EmbeddingProvider providers.EmbeddingProvider
 
-	DocumentBlobProvider blobs.BlobProvider
-	SummaryBlobProvider  blobs.BlobProvider
+	DocumentBlobProvider providers.BlobProvider
+	SummaryBlobProvider  providers.BlobProvider
 }
 
 func Build(
@@ -35,8 +34,8 @@ func Build(
 	lexical providers.LexicalSearchProvider,
 	semantic providers.SemanticSearchProvider,
 	embedding providers.EmbeddingProvider,
-	documentBlob blobs.BlobProvider,
-	summaryBlob blobs.BlobProvider) FileController {
+	documentBlob providers.BlobProvider,
+	summaryBlob providers.BlobProvider) FileController {
 	// https://github.com/gorilla/mux
 
 	service := FileController{
