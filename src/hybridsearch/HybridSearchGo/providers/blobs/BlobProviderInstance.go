@@ -24,8 +24,8 @@ func (provider BlobProviderInstance) List() []models.SearchResultModel {
 		for _, item := range resp.Segment.BlobItems {
 			model := models.SearchResultModel{
 				Content:  "", //TODO: do something else here
-				File:     *item.Metadata["File"],
-				PathHash: *item.Metadata["PathHash"],
+				File:     *item.Metadata["file"],
+				PathHash: *item.Metadata["pathhash"],
 				Score:    1,
 				Type:     models.SearchTypeNone,
 			}
