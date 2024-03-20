@@ -7,6 +7,7 @@ import (
 
 	"hybrid-search/webapi/controllers"
 	"hybrid-search/webapi/providers"
+	"hybrid-search/webapi/providers/blobs"
 
 	"log"
 	"net/http"
@@ -14,12 +15,28 @@ import (
 	"strings"
 )
 
+type FileController struct {
+	Actions []controllers.WebAction
+	Router  *mux.Router
+
+	HybridSearchProvider   providers.HybridSearchProvider
+	LexicalSearchProvider  providers.LexicalSearchProvider
+	SemanticSearchProvider providers.SemanticSearchProvider
+
+	EmbeddingProvider providers.EmbeddingProvider
+
+	DocumentBlobProvider blobs.BlobProvider
+	SummaryBlobProvider  blobs.BlobProvider
+}
+
 func Build(
 	router *mux.Router,
 	hybrid providers.HybridSearchProvider,
 	lexical providers.LexicalSearchProvider,
 	semantic providers.SemanticSearchProvider,
-	embedding providers.EmbeddingProvider) FileController {
+	embedding providers.EmbeddingProvider,
+	documentBlob blobs.BlobProvider,
+	summaryBlob blobs.BlobProvider) FileController {
 	// https://github.com/gorilla/mux
 
 	service := FileController{
@@ -30,6 +47,9 @@ func Build(
 		SemanticSearchProvider: semantic,
 
 		EmbeddingProvider: embedding,
+
+		DocumentBlobProvider: documentBlob,
+		SummaryBlobProvider:  summaryBlob,
 	}
 
 	actions := []controllers.WebAction{
@@ -72,6 +92,8 @@ func getPath(request *http.Request, basePath string) string {
 func (ctrl FileController) Download(writer http.ResponseWriter, request *http.Request) {
 	path := getPath(request, "/file/download/")
 	log.Printf("Download: %s", path)
+	//TODO: finish him!
+	//content := ctrl.DocumentBlobProvider.GetContent(path)
 }
 
 func (ctrl FileController) Text(writer http.ResponseWriter, request *http.Request) {
@@ -96,6 +118,9 @@ func (ctrl FileController) Summary(writer http.ResponseWriter, request *http.Req
 
 func (ctrl FileController) List(writer http.ResponseWriter, request *http.Request) {
 	log.Printf("List")
+
+	result := ctrl.DocumentBlobProvider.List()
+	json.NewEncoder(writer).Encode(result)
 }
 
 func (ctrl FileController) Embed(writer http.ResponseWriter, request *http.Request) {
