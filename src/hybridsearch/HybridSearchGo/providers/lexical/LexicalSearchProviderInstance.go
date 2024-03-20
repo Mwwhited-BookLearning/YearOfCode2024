@@ -5,10 +5,13 @@ import (
 )
 
 type LexicalSearchProviderInstance struct {
+	Options OpenSearchOptions
 }
 
-func Create() LexicalSearchProviderInstance {
-	return LexicalSearchProviderInstance{}
+func Create(options OpenSearchOptions) LexicalSearchProviderInstance {
+	return LexicalSearchProviderInstance{
+		Options: options,
+	}
 }
 
 func (provider LexicalSearchProviderInstance) Search(query string, limit int) []models.SearchResultWithSummaryModel {

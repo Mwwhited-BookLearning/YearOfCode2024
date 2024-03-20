@@ -14,11 +14,11 @@ import (
 func main() {
 	router := mux.NewRouter()
 
-	semantic := semantic.Create()
-	lexical := lexical.Create()
-	hybrid := hybrid.Create(lexical, semantic)
+	embed := embed.Create(embed.CreateOptions())
 
-	embed := embed.Create()
+	semantic := semantic.Create()
+	lexical := lexical.Create(lexical.CreateOptions())
+	hybrid := hybrid.Create(lexical, semantic)
 
 	blobClient := blobs.CreateClientFactory().Create(blobs.CreateOptions())
 	blobDocs := blobs.CreateBlobProviderFactory().Create(blobClient, "docs")

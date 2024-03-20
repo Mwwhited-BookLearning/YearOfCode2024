@@ -3,28 +3,23 @@ package embed
 import (
 	"encoding/json"
 	"fmt"
-	"hybrid-search/webapi/providers"
 	"io"
 	"log"
 	"net/http"
 )
 
 type EmbeddingProviderInstance struct {
-	Lexical  providers.LexicalSearchProvider
-	Semantic providers.SemanticSearchProvider
+	Options SBertOptions
 }
 
-func Create() EmbeddingProviderInstance {
-	return EmbeddingProviderInstance{}
-}
-
-type ResponseData struct {
-	Embedding []float32 `json:"embedding"`
-	// Add other fields as needed based on the structure of your JSON response
+func Create(options SBertOptions) EmbeddingProviderInstance {
+	return EmbeddingProviderInstance{
+		Options: options,
+	}
 }
 
 func (provider EmbeddingProviderInstance) Embed(text string) ([]float32, error) {
-	response, err := http.Get(fmt.Sprintf("http://192.168.1.170:5080/generate-embedding?query=%s", text))
+	response, err := http.Get(fmt.Sprintf("%s/generate-embedding?query=%s", provider.Options.Url, text))
 
 	if err != nil {
 		log.Println("Error:", err)
@@ -46,4 +41,9 @@ func (provider EmbeddingProviderInstance) Embed(text string) ([]float32, error) 
 
 	log.Println("Array of floats:", responseData.Embedding)
 	return responseData.Embedding, nil
+}
+
+func (provider EmbeddingProviderInstance) Length() int {
+	ret, _ := provider.Embed("hello world!")
+	return len(ret)
 }
