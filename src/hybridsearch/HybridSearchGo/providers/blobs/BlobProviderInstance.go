@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/Azure/azure-sdk-for-go/sdk/storage/azblob"
 	"hybrid-search/webapi/models"
+	"log"
 )
 
 type BlobProviderInstance struct {
@@ -12,7 +13,22 @@ type BlobProviderInstance struct {
 }
 
 func (provider BlobProviderInstance) GetContent(file string) models.ContentReference {
-	return models.ContentReference{}
+	//exists, _ := provider.Client.ServiceClient().GetProperties(context.Background(), nil)
+
+	//TODO: do this better
+	buffer := make([]byte, 1024*1024*1024)
+
+	ret, err := provider.Client.DownloadBuffer(context.TODO(), provider.CollectionName, file, buffer, nil)
+
+	log.Printf("GetContent-ret %v", ret, err)
+
+	content := models.ContentReference{
+		ContentType: "x-text/markdown", //TODO: fix this
+		FileName:    file,
+		Content:     buffer[:ret],
+	}
+
+	return content
 }
 func (provider BlobProviderInstance) List() []models.SearchResultModel {
 

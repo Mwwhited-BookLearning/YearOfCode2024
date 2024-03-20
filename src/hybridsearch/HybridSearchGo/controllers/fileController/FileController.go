@@ -92,7 +92,10 @@ func (ctrl FileController) Download(writer http.ResponseWriter, request *http.Re
 	path := getPath(request, "/file/download/")
 	log.Printf("Download: %s", path)
 	//TODO: finish him!
-	//content := ctrl.DocumentBlobProvider.GetContent(path)
+	content := ctrl.DocumentBlobProvider.GetContent(path)
+
+	writer.Header().Add("ContentType", content.ContentType)
+	writer.Write(content.Content)
 }
 
 func (ctrl FileController) Text(writer http.ResponseWriter, request *http.Request) {
