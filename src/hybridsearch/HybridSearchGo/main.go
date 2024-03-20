@@ -26,6 +26,8 @@ func main() {
 		semantic,
 		embed)
 
+	SwaggerRouting(router)
+
 	http.Handle("/", router)
 	http.ListenAndServe("0.0.0.0:3080", nil)
 }

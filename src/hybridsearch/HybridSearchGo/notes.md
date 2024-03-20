@@ -14,6 +14,8 @@
 * https://eli.thegreenplace.net/2021/rest-servers-in-go-part-6-authentication/
 * https://eli.thegreenplace.net/2021/rest-servers-in-go-part-7-graphql/
 
+* https://github.com/denitiawan/research-swagger-gomod-gorillamux/blob/main/tmp/readme/setup_swagger.md
+
 ## Setup dependency
 
 * https://go.dev/doc/modules/managing-dependencies

@@ -15,6 +15,9 @@ github.com/maxbrunsfeld/counterfeiter/v6 ^
 github.com/sqlc-dev/sqlc/cmd/sqlc ^
 goa.design/model/cmd/mdl ^
 goa.design/model/cmd/stz
+
+go install github.com/swaggo/swag/cmd/swag@latest
+
 EXIT /B 0
 
 :generate
