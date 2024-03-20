@@ -17,7 +17,9 @@ func main() {
 	embed := embed.Create(embed.CreateOptions())
 
 	semantic := semantic.Create()
-	lexical := lexical.Create(lexical.CreateOptions())
+
+	lexical := lexical.Create(*lexical.CreateClientFactory(lexical.CreateOptions()).Create())
+
 	hybrid := hybrid.Create(lexical, semantic)
 
 	blobClient := blobs.CreateClientFactory().Create(blobs.CreateOptions())

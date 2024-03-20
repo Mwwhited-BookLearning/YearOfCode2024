@@ -1,16 +1,17 @@
 package lexical
 
 import (
+	opensearch "github.com/opensearch-project/opensearch-go"
 	"hybrid-search/webapi/models"
 )
 
 type LexicalSearchProviderInstance struct {
-	Options OpenSearchOptions
+	Client opensearch.Client
 }
 
-func Create(options OpenSearchOptions) LexicalSearchProviderInstance {
+func Create(client opensearch.Client) LexicalSearchProviderInstance {
 	return LexicalSearchProviderInstance{
-		Options: options,
+		Client: client,
 	}
 }
 
