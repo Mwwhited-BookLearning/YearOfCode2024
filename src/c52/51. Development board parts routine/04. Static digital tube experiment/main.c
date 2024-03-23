@@ -1,73 +1,77 @@
-/********************************* 深圳市航太电子有限公司 *******************************
-* 实 验 名 ：静态数码管实验
-* 实验说明 ：4位数码管循环显示16进制0~F
-* 实验平台 ：航太51单片机开发板
-* 连接方式 ：CN3接CN16，A接P00，B接P01，C接P02，D接P03，E接P04，F接P05，G接P06，DP接P07
-*            CN1接CN17，PUT1接P24，PUT2接P25，PUT3接P26，PUT4接P27
-* 注    意 ：数码管为共阳数码管，也就是说段选接口低有效，而公共端经过PNP三极管，所以位选接口低有效
-* 作    者 ：航太电子产品研发部    QQ ：1909197536
-* 店    铺 ：http://shop120013844.taobao.com/
-****************************************************************************************/
+/********************************* Shenzhen Aerospace Electronics Co., Ltd *******************************
+ * Experiment Name: Dynamic display experiment
+ * Experiment Description: Sequentially displays 16 numbers from 0 to F with 4-bit dynamic display
+ * Experiment Platform: Aerospace 51 microcontroller development board
+ * Connection Method: A -> P00, B -> P01, C -> P02, D -> P03, E -> P04, F -> P05, G -> P06, DP -> P07
+ *                        PUT1 -> P24, PUT2 -> P25, PUT3 -> P26, PUT4 -> P27
+ * Note: The connections are for common anode display, if using common cathode display, connections and logic need to be adjusted accordingly.
+ * Author: Aerospace Electronics Product Development Department    QQ: 1909197536
+ * Store: http://shop120013844.taobao.com/
+ ****************************************************************************************/
 
 #include <reg52.h>
 #include <intrins.h>
 
-#define FOSC 11059200L //晶振设置，默认使用11.0592M Hz
-//#define FOSC 12000000L //晶振设置，使用12M Hz
-//#define FOSC 24000000L //晶振设置，使用24M Hz
+#define FOSC 11059200L // Crystal oscillator setting, default is 11.0592M Hz
+// #define FOSC 12000000L // Crystal oscillator setting, using 12M Hz
+// #define FOSC 24000000L // Crystal oscillator setting, using 24M Hz
 
-//IO接口定义
+// IO interface definition
 #define LED_PORT P0
-sbit wela_1 = P2^4;
-sbit wela_2 = P2^5;
-sbit wela_3 = P2^6;
-sbit wela_4 = P2^7;
+sbit wela_1 = P2 ^ 4;
+sbit wela_2 = P2 ^ 5;
+sbit wela_3 = P2 ^ 6;
+sbit wela_4 = P2 ^ 7;
 
-//全局变量定义
+// Global variable
 unsigned char num;
 
-//LED显示字模 0-F 共阳模式
-unsigned code table[]= {0Xc0,0xf9,0xa4,0xb0,0x99,0x92,0x82,0xf8,0x80,0x90,0x88,0x83,0xc6,0xa1,0x86,0x8e};
+// LED display pattern 0-F
+unsigned code table[] = {0Xc0, 0xf9, 0xa4, 0xb0, 0x99, 0x92, 0x82, 0xf8, 0x80, 0x90, 0x88, 0x83, 0xc6, 0xa1, 0x86, 0x8e};
 
 /*******************************************************************************
-* 函 数 名 ：Delayms
-* 函数功能 ：实现 ms级的延时
-* 输    入 ：ms
-* 输    出 ：无
-*******************************************************************************/
+ * Function Name: Delayms
+ * Function Description: Implement ms-level delay
+ * Input: ms
+ * Output: None
+ *******************************************************************************/
 void Delayms(unsigned int ms)
 {
-	unsigned int i,j;
-	for(i=0;i<ms;i++)
-	#if FOSC == 11059200L
-		for(j=0;j<114;j++);
-	#elif FOSC == 12000000L
-	  for(j=0;j<123;j++);
-	#elif FOSC == 24000000L
-		for(j=0;j<249;j++);
-	#else
-		for(j=0;j<114;j++);
-	#endif
+   unsigned int i, j;
+   for (i = 0; i < ms; i++)
+#if FOSC == 11059200L
+      for (j = 0; j < 114; j++)
+         ;
+#elif FOSC == 12000000L
+      for (j = 0; j < 123; j++)
+         ;
+#elif FOSC == 24000000L
+      for (j = 0; j < 249; j++)
+         ;
+#else
+      for (j = 0; j < 114; j++)
+         ;
+#endif
 }
 
 /*******************************************************************************
-* 函 数 名 ：main
-* 函数功能 ：主函数
-* 输    入 ：无
-* 输    出 ：无
-*******************************************************************************/
+ * Function Name: main
+ * Function Description: Main function
+ * Input: None
+ * Output: None
+ *******************************************************************************/
 void main()
 {
-   wela_1 = 0;	  //打开数码管共阳端
+   wela_1 = 0; // Enable dynamic display
    wela_2 = 0;
    wela_3 = 0;
    wela_4 = 0;
 
-   while(1)
+   while (1)
    {
-      for(num=0;num<16;num++) //循环写数据到LED_PORT 口
-      {   
-         LED_PORT=table[num];  //数组是按共阳的方式取的
+      for (num = 0; num < 16; num++) // Loop through numbers and display on LED_PORT
+      {
+         LED_PORT = table[num]; // Display the current number
          Delayms(1000);
       }
    }

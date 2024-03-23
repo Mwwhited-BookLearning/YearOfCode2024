@@ -1,75 +1,74 @@
-/********************************* 深圳市航太电子有限公司 *******************************
-* 实 验 名 ：串口实验
-* 实验说明 ：打开串口调试助手，单片机自动返回发送的数据
-* 实验平台 ：航太51单片机开发板
-* 连接方式 ：
-* 注    意 ：串口COM口的选择与下载时选用的串口一致，如果是使用其他串口调试助手，下载程序前
-*            必须先断开其他串口调试助手，否则会出现串口占用下载不了的情况。
-* 作    者 ：航太电子产品研发部    QQ ：1909197536
-* 店    铺 ：http://shop120013844.taobao.com/
-****************************************************************************************/
+/********************************* Shenzhen Aerospace Electronics Co., Ltd *******************************
+ * Experiment Name: Serial Communication Experiment
+ * Experiment Description: Open a serial port and set it to automatically receive and transmit data to the external device.
+ * Experiment Platform: Aerospace 51 microcontroller development board
+ * Connection Method: N/A
+ * Note: Please select the COM port and baud rate according to the external device. If using the COM port, ensure that the port is available and not occupied by other programs.
+ *            Also, please be aware that the COM port may conflict with other ports or operations, resulting in unpredictable results.
+ * Author: Aerospace Electronics Product Development Department    QQ: 1909197536
+ * Store: http://shop120013844.taobao.com/
+ ****************************************************************************************/
 
 #include <reg52.h>
 #include <intrins.h>
 
-#define FOSC 11059200L //晶振设置，默认使用11.0592M Hz
-//#define FOSC 12000000L //晶振设置，使用12M Hz
-//#define FOSC 24000000L //晶振设置，使用24M Hz
+#define FOSC 11059200L // Crystal oscillator setting, default is 11.0592M Hz
+// #define FOSC 12000000L // Crystal oscillator setting, using 12M Hz
+// #define FOSC 24000000L // Crystal oscillator setting, using 24M Hz
 #define BAUD 9600
 
-//IO接口定义
+// IO interface definition
 
-//全局变量定义
+// Global variables
 
 /*******************************************************************************
-* 函 数 名 ：UsartConfiguration
-* 函数功能 ：串口设置
-* 输    入 ：无
-* 输    出 ：无
-*******************************************************************************/
+ * Function Name: UsartConfiguration
+ * Function Description: Configure USART communication
+ * Input: None
+ * Output: None
+ *******************************************************************************/
 void UsartConfiguration()
 {
-	SCON = 0X50;			//设置为工作方式1	10位异步收发器
-	TMOD |= 0x20; //设置计数器工作方式2  8位自动重装计数器	
-	PCON = 0X80;//波特率加倍	SMOD = 1  28800
-	TH1 = 256 -(FOSC/12/32/(BAUD/2)); //计算溢出率
-	TL1 = 256 -(FOSC/12/32/(BAUD/2));
-	TR1 = 1; //打开定时器	
-	ES=1;//打开串口
-	EA = 1;//打开总中断
+	SCON = 0X50;							   // Set UART mode 1: 10-bit asynchronous mode with variable baud rate
+	TMOD |= 0x20;							   // Set timer 1 as auto-reload mode 2, 8-bit auto-reload
+	PCON = 0X80;							   // Enable SMOD bit for serial communication (28800)
+	TH1 = 256 - (FOSC / 12 / 32 / (BAUD / 2)); // Set reload value for timer 1
+	TL1 = 256 - (FOSC / 12 / 32 / (BAUD / 2));
+	TR1 = 1; // Start timer 1
+	ES = 1;	 // Enable serial port interrupt
+	EA = 1;	 // Enable interrupts
 }
 
 /*******************************************************************************
-* 函 数 名 ：main
-* 函数功能 ：主函数
-* 输    入 ：无
-* 输    出 ：无
-*******************************************************************************/
+ * Function Name: main
+ * Function Description: Main function
+ * Input: None
+ * Output: None
+ *******************************************************************************/
 void main()
 {
 	UsartConfiguration();
-	while(1)
+	while (1)
 	{
-		
-	}	
+	}
 }
 
 /*******************************************************************************
-* 函 数 名 ：UsartInt
-* 函数功能 ：串口中断服务函数
-* 输    入 ：无
-* 输    出 ：无
-*******************************************************************************/
+ * Function Name: UsartInt
+ * Function Description: Interrupt service routine for USART communication
+ * Input: None
+ * Output: None
+ *******************************************************************************/
 void UsartInt() interrupt 4
 {
 	unsigned char receiveData;
-	if(RI == 1)
+	if (RI == 1)
 	{
-		receiveData=SBUF; //出去接收到的数据
-		RI = 0;           //清除接收中断标志位
-		SBUF=receiveData; //将接收到的数据放入到发送寄存器
-		while(!TI);		  //等待发送数据完成
-		TI=0;		 //清除发送完成标志位	
-	}	 
+		receiveData = SBUF; // Read received data
+		RI = 0;				// Clear receive interrupt flag
+		SBUF = receiveData; // Send received data back
+		while (!TI)
+			;	// Wait until transmission is complete
+		TI = 0; // Clear transmission interrupt flag
+	}
 }
-

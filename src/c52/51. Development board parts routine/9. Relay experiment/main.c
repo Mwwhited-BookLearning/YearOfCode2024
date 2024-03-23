@@ -1,59 +1,61 @@
-/********************************* 深圳市航太电子有限公司 *******************************
-* 实 验 名 ：继电器实验
-* 实验说明 ：继电器循环导通和断开
-* 实验平台 ：航太51单片机开发板
-* 连接方式 ：CN16接CN7 JD1_drive接P05
-* 注    意 ：做该实验时，请务必弄清继电器原理及该如何连接。
-* 作    者 ：航太电子产品研发部    QQ ：1909197536
-* 店    铺 ：http://shop120013844.taobao.com/
-****************************************************************************************/
+/********************************* Shenzhen Aerospace Electronics Co., Ltd *******************************
+ * Experiment Name: Relay Control Experiment
+ * Experiment Description: Control the relay to cycle on and off
+ * Experiment Platform: Aerospace 51 microcontroller development board
+ * Connection Method: CN16-CN7, JD1_drive-P05
+ * Note: Please ensure that the power supply of the relay is connected correctly to avoid damage to the relay and the original circuit.
+ * Author: Aerospace Electronics Product Development Department    QQ: 1909197536
+ * Store: http://shop120013844.taobao.com/
+ ****************************************************************************************/
 
 #include <reg52.h>
 #include <intrins.h>
 
-#define FOSC 11059200L //晶振设置，默认使用11.0592M Hz
-//#define FOSC 12000000L //晶振设置，使用12M Hz
-//#define FOSC 24000000L //晶振设置，使用24M Hz
+#define FOSC 11059200L // Crystal oscillator setting, default is 11.0592M Hz
+// #define FOSC 12000000L // Crystal oscillator setting, using 12M Hz
+// #define FOSC 24000000L // Crystal oscillator setting, using 24M Hz
 
-//IO接口定义
-sbit RELAY = P0^5;
-
-//全局变量定义
+// IO interface definition
+sbit RELAY = P0 ^ 5; // Relay control pin
 
 /*******************************************************************************
-* 函 数 名 ：Delayms
-* 函数功能 ：实现 ms级的延时
-* 输    入 ：ms
-* 输    出 ：无
-*******************************************************************************/
+ * Function Name: Delayms
+ * Function Description: Delay in milliseconds
+ * Input: ms - delay time in milliseconds
+ * Output: None
+ *******************************************************************************/
 void Delayms(unsigned int ms)
 {
-	unsigned int i,j;
-	for(i=0;i<ms;i++)
-	#if FOSC == 11059200L
-		for(j=0;j<114;j++);
-	#elif FOSC == 12000000L
-	  for(j=0;j<123;j++);
-	#elif FOSC == 24000000L
-		for(j=0;j<249;j++);
-	#else
-		for(j=0;j<114;j++);
-	#endif
+	unsigned int i, j;
+	for (i = 0; i < ms; i++)
+#if FOSC == 11059200L
+		for (j = 0; j < 114; j++)
+			;
+#elif FOSC == 12000000L
+		for (j = 0; j < 123; j++)
+			;
+#elif FOSC == 24000000L
+		for (j = 0; j < 249; j++)
+			;
+#else
+		for (j = 0; j < 114; j++)
+			;
+#endif
 }
 
 /*******************************************************************************
-* 函 数 名 ：main
-* 函数功能 ：主函数
-* 输    入 ：无
-* 输    出 ：无
-*******************************************************************************/
+ * Function Name: main
+ * Function Description: Main function
+ * Input: None
+ * Output: None
+ *******************************************************************************/
 void main()
 {
-	while(1)
+	while (1)
 	{
-		RELAY = 0; //常开触点断开，常闭触点闭合
+		RELAY = 0; // Turn off the relay to make the controlled device off
 		Delayms(1000);
-		RELAY = 1; //常开触点闭合，常闭触点断开
+		RELAY = 1; // Turn on the relay to make the controlled device on
 		Delayms(1000);
-	}	
+	}
 }

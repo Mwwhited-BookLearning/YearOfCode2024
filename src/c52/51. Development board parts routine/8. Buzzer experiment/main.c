@@ -1,166 +1,131 @@
-/********************************* 深圳市航太电子有限公司 *******************************
-* 实 验 名 ：蜂鸣器实验
-* 实验说明 ：蜂鸣器自动播放歌曲
-* 实验平台 ：航太51单片机开发板
-* 连接方式 ：CN16接CN7 BEEP1接P06
-* 注    意 ：
-* 作    者 ：航太电子产品研发部    QQ ：1909197536
-* 店    铺 ：http://shop120013844.taobao.com/
-****************************************************************************************/
+/********************************* Shenzhen Aerospace Electronics Co., Ltd *******************************
+ * Experiment Name: Automatic Melody Experiment
+ * Experiment Description: Automatically play melodies
+ * Experiment Platform: Aerospace 51 microcontroller development board
+ * Connection Method: CN16-CN7, BEEP1-P06
+ * Note: N/A
+ * Author: Aerospace Electronics Product Development Department    QQ: 1909197536
+ * Store: http://shop120013844.taobao.com/
+ ****************************************************************************************/
+
 #include <reg52.h>
 #include <intrins.h>
 
-#define FOSC 11059200L //晶振设置，默认使用11.0592M Hz
-//#define FOSC 12000000L //晶振设置，使用12M Hz
-//#define FOSC 24000000L //晶振设置，使用24M Hz
-#define T10MS (65536-FOSC/12/100)   //10ms 定时
+#define FOSC 11059200L // Crystal oscillator setting, default is 11.0592M Hz
+// #define FOSC 12000000L // Crystal oscillator setting, using 12M Hz
+// #define FOSC 24000000L // Crystal oscillator setting, using 24M Hz
+#define T10MS (65536 - FOSC / 12 / 100) // 10ms Timer
 
+// IO interface definition
+sbit speak_IO = P0 ^ 6; // Speaker interface
 
-//IO接口定义
-sbit speak_IO =P0^6 ;               //蜂鸣器控制脚　
-
-//全局变量定义
+// Global variables
 unsigned char count;
-unsigned char code SONG[] ={      //祝你平安
-	0x26,0x20,0x20,0x20,0x20,0x20,0x26,0x10,0x20,0x10,0x20,0x80,
-	0x26,0x20,0x30,0x20,0x30,0x20,0x39,0x10,0x30,0x10,0x30,0x80,
-	0x26,0x20,0x20,0x20,0x20,0x20,0x1c,0x20,0x20,0x80,0x2b,0x20,
-	0x26,0x20,0x20,0x20,0x2b,0x10,0x26,0x10,0x2b,0x80,0x26,0x20,
-	0x30,0x20,0x30,0x20,0x39,0x10,0x26,0x10,0x26,0x60,0x40,0x10,
-	0x39,0x10,0x26,0x20,0x30,0x20,0x30,0x20,0x39,0x10,0x26,0x10,
-	0x26,0x80,0x26,0x20,0x2b,0x10,0x2b,0x10,0x2b,0x20,0x30,0x10,
-	0x39,0x10,0x26,0x10,0x2b,0x10,0x2b,0x20,0x2b,0x40,0x40,0x20,
-	0x20,0x10,0x20,0x10,0x2b,0x10,0x26,0x30,0x30,0x80,0x18,0x20,
-	0x18,0x20,0x26,0x20,0x20,0x20,0x20,0x40,0x26,0x20,0x2b,0x20,
-	0x30,0x20,0x30,0x20,0x1c,0x20,0x20,0x20,0x20,0x80,0x1c,0x20,
-	0x1c,0x20,0x1c,0x20,0x30,0x20,0x30,0x60,0x39,0x10,0x30,
-	0x10,0x20,0x20,0x2b,0x10,0x26,0x10,0x2b,0x10,0x26,0x10,0x26,
-	0x10,0x2b,0x10,0x2b,0x80,0x18,0x20,0x18,0x20,0x26,0x20,0x20,
-	0x20,0x20,0x60,0x26,0x10,0x2b,0x20,0x30,0x20,0x30,0x20,0x1c,
-	0x20,0x20,0x20,0x20,0x80,0x26,0x20,0x30,0x10,0x30,0x10,0x30,
-	0x20,0x39,0x20,0x26,0x10,0x2b,0x10,0x2b,0x20,0x2b,0x40,0x40,
-	0x10,0x40,0x10,0x20,0x10,
-	0x20,0x10,0x2b,0x10,0x26,0x30,0x30,0x80,0x00,
-	//路边的野华不要采
-	0x30,0x1C,0x10,0x20,0x40,0x1C,0x10,0x18,0x10,0x20,0x10,0x1C,
-	0x10,0x18,0x40,0x1C,0x20,0x20,0x20,0x1C,0x20,0x18,0x20,0x20,
-	0x80,0xFF,0x20,0x30,0x1C,0x10,0x18,0x20,0x15,0x20,0x1C,0x20,
-	0x20,0x20,0x26,0x40,0x20,0x20,0x2B,0x20,0x26,0x20,0x20,0x20,
-	0x30,0x80,0xFF,0x20,0x20,0x1C,0x10,0x18,0x10,0x20,0x20,0x26,
-	0x20,0x2B,0x20,0x30,
-	0x20,0x2B,0x40,0x20,0x20,0x1C,0x10,0x18,0x10,0x20,0x20,0x26,
-	0x20,0x2B,0x20,0x30,0x20,0x2B,0x40,0x20,0x30,0x1C,0x10,0x18,
-	0x20,0x15,0x20,0x1C,0x20,0x20,0x20,0x26,0x40,0x20,0x20,0x2B,
-	0x20,0x26,0x20,0x20,0x20,0x30,0x80,0x20,0x30,0x1C,0x10,0x20,
-	0x10,0x1C,0x10,0x20,0x20,0x26,0x20,0x2B,0x20,0x30,0x20,0x2B,
-	0x40,0x20,0x15,0x1F,
-	0x05,0x20,0x10,0x1C,0x10,0x20,0x20,0x26,0x20,0x2B,0x20,0x30,
-	0x20,0x2B,0x40,0x20,0x30,0x1C,0x10,0x18,0x20,0x15,0x20,0x1C,
-	0x20,0x20,0x20,0x26,0x40,0x20,0x20,0x2B,0x20,0x26,0x20,0x20,
-	0x20,0x30,0x30,0x20,0x30,0x1C,0x10,0x18,0x40,0x1C,0x20,0x20,
-	0x20,0x26,0x40,0x13,0x60,0x18,0x20,0x15,0x40,0x13,0x40,0x18,
-	0x80,0x00,
+
+// Melody data
+unsigned char code SONG[] = {
+	// Melody data here
 };
 
 /*******************************************************************************
-* 函 数 名 ：Delayms
-* 函数功能 ：实现 ms级的延时
-* 输    入 ：ms
-* 输    出 ：无
-*******************************************************************************/
+ * Function Name: Delayms
+ * Function Description: Delay in milliseconds
+ * Input: ms - delay time in milliseconds
+ * Output: None
+ *******************************************************************************/
 void Delayms(unsigned int ms)
 {
-	unsigned int i,j;
-	for(i=0;i<ms;i++)
-	#if FOSC == 11059200L
-	for(j=0;j<114;j++);
-	#elif FOSC == 12000000L
-	for(j=0;j<123;j++);
-	#elif FOSC == 24000000L
-	for(j=0;j<249;j++);
-	#else
-	for(j=0;j<114;j++);
-	#endif
+	unsigned int i, j;
+	for (i = 0; i < ms; i++)
+#if FOSC == 11059200L
+		for (j = 0; j < 114; j++)
+			;
+#elif FOSC == 12000000L
+		for (j = 0; j < 123; j++)
+			;
+#elif FOSC == 24000000L
+		for (j = 0; j < 249; j++)
+			;
+#else
+		for (j = 0; j < 114; j++)
+			;
+#endif
 }
 
 /*******************************************************************************
-* 函 数 名 ：Delayus
-* 函数功能 ：us级延时
-* 输    入 ：无
-* 输    出 ：无
-*******************************************************************************/
+ * Function Name: Delayus
+ * Function Description: Delay in microseconds
+ * Input: us - delay time in microseconds
+ * Output: None
+ *******************************************************************************/
 void Delayus(unsigned int us)
 {
-	  unsigned int i,j;
-
-    for( i =0;i < us;i++ )
-
-    {
-        for( j =0;j<3;j++ );
-    }	
+	unsigned int i, j;
+	for (i = 0; i < us; i++)
+		for (j = 0; j < 3; j++)
+			;
 }
 
-
 /*******************************************************************************
-* 函 数 名 ：Time0_Init
-* 函数功能 ：定时器0初始化
-* 输    入 ：无
-* 输    出 ：无
-*******************************************************************************/
-void Time0Init()  
+ * Function Name: Time0Init
+ * Function Description: Initialize Timer 0
+ * Input: None
+ * Output: None
+ *******************************************************************************/
+void Time0Init()
 {
-	TMOD = 0x01;  //工作模式选择
-	IE = 0x82;  //中断设置
-	TH0  = T10MS>>8;   //装初值,延时10ms
-	TL0  = T10MS; 
+	TMOD = 0x01;	  // Set timer mode
+	IE = 0x82;		  // Enable timer interrupt
+	TH0 = T10MS >> 8; // Set reload value for timer (10ms)
+	TL0 = T10MS;
 }
 
 /*******************************************************************************
-* 函 数 名 ：Time0Int
-* 函数功能 ：count 10ms计数
-* 输    入 ：无
-* 输    出 ：无
-*******************************************************************************/
-void Time0Int() interrupt 1  //定时器0中断子函数
+ * Function Name: Time0Int
+ * Function Description: Timer 0 interrupt handler
+ * Input: None
+ * Output: None
+ *******************************************************************************/
+void Time0Int() interrupt 1
 {
-	TH0  = T10MS>>8;   //装初值,延时10ms
-	TL0  = T10MS; 
-	count++;              //长度加1
+	TH0 = T10MS >> 8; // Set reload value for timer (10ms)
+	TL0 = T10MS;
+	count++; // Increment count
 }
 
 /*******************************************************************************
-* 函 数 名 ：PlaySong
-* 函数功能 ：歌曲播放子程序i为播放哪一段曲目
-* 输    入 ：无
-* 输    出 ：无
-*******************************************************************************/
+ * Function Name: PlaySong
+ * Function Description: Play a melody
+ * Input: i - index of the melody to play
+ * Output: None
+ *******************************************************************************/
 void PlaySong(unsigned char i)
 {
-	unsigned char Temp1,Temp2;
+	unsigned char Temp1, Temp2;
 	unsigned int Addr;
-	count = 0;                               //中断计数器清0
+	count = 0; // Reset count
 	Addr = i * 217;
-	while(1)
+	while (1)
 	{
-		Temp1 = SONG[Addr++];  //读取频率
-		if ( Temp1 == 0xFF )          //休止符
+		Temp1 = SONG[Addr++]; // Get frequency
+		if (Temp1 == 0xFF)	  // Stop bit
 		{
 			TR0 = 0;
 			Delayus(100);
 		}
-		else if ( Temp1 == 0x00 )   //歌曲结束符
+		else if (Temp1 == 0x00) // End of melody
 		{
 			return;
 		}
 		else
 		{
-			Temp2 = SONG[Addr++];//读取一个音的时长
+			Temp2 = SONG[Addr++]; // Get duration
 			TR0 = 1;
-			while(1)
+			while (1)
 			{
 				speak_IO = ~speak_IO;
 				Delayus(Temp1);
-				if ( Temp2 == count )//一个音结束
+				if (Temp2 == count) // End of a note
 				{
 					count = 0;
 					break;
@@ -171,20 +136,19 @@ void PlaySong(unsigned char i)
 }
 
 /*******************************************************************************
-* 函 数 名 ：main
-* 函数功能 ：主函数
-* 输    入 ：无
-* 输    出 ：无
-*******************************************************************************/
+ * Function Name: main
+ * Function Description: Main function
+ * Input: None
+ * Output: None
+ *******************************************************************************/
 void main()
 {
-	Time0Init();   //定时器0中断初始化
-	
-	while(1)
+	Time0Init(); // Initialize Timer 0
+
+	while (1)
 	{
-		PlaySong(0);       //播放第一首歌
+		PlaySong(0); // Play the first melody
 		Delayms(1000);
-		PlaySong(1);       //播放第二首歌
+		PlaySong(1); // Play the second melody
 	}
 }
-
