@@ -54,11 +54,11 @@ void Delayms(unsigned int ms)
 void main()
 {
 	k = 0xFE;
-	P1 = k;
+	P2 = k;
 	while (1)
 	{
-		Delayms(1000);
+		Delayms(500);
 		k = _crol_(k, 1); // Circular left shift by 1
-		P1 = k;
+		P2 = k;
 	}
 }
