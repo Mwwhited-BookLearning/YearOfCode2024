@@ -63,19 +63,29 @@ func Build(
 	}
 	service.Actions = actions
 
+	group := router.Group("/api")
+
 	for idx, ctrl := range service.Actions {
 		log.Printf("FileController (%v): %s - %s", idx, ctrl.Pattern, ctrl.Method)
 
 		if ctrl.Method == "GET" {
-			router.GET(ctrl.Pattern, ctrl.Handler)
+			group.GET(ctrl.Pattern, ctrl.Handler)
 		} else if ctrl.Method == "POST" {
-			router.POST(ctrl.Pattern, ctrl.Handler)
+			group.POST(ctrl.Pattern, ctrl.Handler)
 		}
 	}
 
 	return service
 }
 
+// @BasePath /api
+
+// Download godoc
+// @Summary download file
+// @Schemes
+// @Description download file
+// @Success 200 {binary} FileContent
+// @Router /file/download/{path} [get]
 func (ctrl FileController) Download(context *gin.Context) {
 	path := context.Param("path")
 	log.Printf("Download: %s", path)
@@ -86,26 +96,65 @@ func (ctrl FileController) Download(context *gin.Context) {
 	context.Writer.Write(content.Content)
 }
 
+// Download Text godoc
+// @Summary Download Text
+// @Schemes
+// @Description Download Text
+// @Produce text/plain
+// @Success 200 {binary} FileContent
+// @Router /file/text/{path} [get]
 func (ctrl FileController) Text(context *gin.Context) {
 	path := context.Param("path")
 	log.Printf("Text: %s", path)
+	//TODO: fix this
 }
 
+// Download HTML godoc
+// @Summary Download HTML
+// @Schemes
+// @Description Download HTML
+// @Produce text/html
+// @Success 200 {binary} FileContent
+// @Router /file/html/{path} [get]
 func (ctrl FileController) Html(context *gin.Context) {
 	path := context.Param("path")
 	log.Printf("Html: %s", path)
+	//TODO: fix this
 }
 
+// Download PDF godoc
+// @Summary Download PDF
+// @Schemes
+// @Description Download PDF
+// @Produce text/plain
+// @Success 200 {binary} FileContent
+// @Router /file/pdf/{path} [get]
 func (ctrl FileController) Pdf(context *gin.Context) {
 	path := context.Param("path")
 	log.Printf("Pdf: %s", path)
+	//TODO: fix this
 }
 
+// Download Summary godoc
+// @Summary Download Summary
+// @Schemes
+// @Description Download Summary
+// @Produce text/plain
+// @Success 200 {binary} FileContent
+// @Router /file/summary/{path} [get]
 func (ctrl FileController) Summary(context *gin.Context) {
 	path := context.Param("path")
 	log.Printf("Summary: %s", path)
+	//TODO: fix this
 }
 
+// List all files godoc
+// @Summary List all files
+// @Schemes
+// @Description List all files
+// @Produce json
+// @Success 200 {json} SearchModelResult[]
+// @Router /file/list [get]
 func (ctrl FileController) List(context *gin.Context) {
 	log.Printf("List")
 
@@ -113,6 +162,14 @@ func (ctrl FileController) List(context *gin.Context) {
 	context.JSON(200, result)
 }
 
+// Generate embedding godoc
+// @Summary Generate embedding
+// @Schemes
+// @Description Generate embedding
+// @Produce json
+// @Param text query string true "text for embedding"
+// @Success 200 {json} float32[]
+// @Router /file/embed [get]
 func (ctrl FileController) Embed(context *gin.Context) {
 	log.Printf("Embed")
 
@@ -122,6 +179,15 @@ func (ctrl FileController) Embed(context *gin.Context) {
 	context.JSON(200, result)
 }
 
+// Semantic Search godoc
+// @Summary Semantic Search
+// @Schemes
+// @Description Semantic Search
+// @Produce json
+// @Param query query string true "query string"
+// @Param limit query int false "page length"
+// @Success 200 {json} SearchResultWithSummaryModel[]
+// @Router /file/semantic [get]
 func (ctrl FileController) Semantic(context *gin.Context) {
 	log.Printf("Semantic")
 
@@ -135,6 +201,15 @@ func (ctrl FileController) Semantic(context *gin.Context) {
 	context.JSON(200, result)
 }
 
+// Lexical Search godoc
+// @Summary Lexical Search
+// @Schemes
+// @Description Lexical Search
+// @Produce json
+// @Param query query string true "query string"
+// @Param limit query int false "page length"
+// @Success 200 {json} SearchResultWithSummaryModel[]
+// @Router /file/lexical [get]
 func (ctrl FileController) Lexical(context *gin.Context) {
 	log.Printf("Lexical")
 
@@ -148,6 +223,15 @@ func (ctrl FileController) Lexical(context *gin.Context) {
 	context.JSON(200, result)
 }
 
+// Hybrid Search godoc
+// @Summary Hybrid Search
+// @Schemes
+// @Description Hybrid Search
+// @Produce json
+// @Param query query string true "query string"
+// @Param limit query int false "page length"
+// @Success 200 {json} SearchResultWithSummaryModel[]
+// @Router /file/hybrid [get]
 func (ctrl FileController) Hybrid(context *gin.Context) {
 	log.Printf("Hybrid")
 

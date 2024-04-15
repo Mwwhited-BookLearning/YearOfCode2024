@@ -2,13 +2,17 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
+
 	"hybrid-search/webapi/controllers/fileController"
+	//docs "hybrid-search/webapi/docs"
 	"hybrid-search/webapi/providers/blobs"
 	"hybrid-search/webapi/providers/embed"
 	"hybrid-search/webapi/providers/hybrid"
 	"hybrid-search/webapi/providers/lexical"
 	"hybrid-search/webapi/providers/semantic"
-	"net/http"
+
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func main() {
@@ -35,6 +39,8 @@ func main() {
 		blobDocs,
 		blobSummary)
 
-	http.Handle("/", router)
-	http.ListenAndServe("0.0.0.0:3080", nil)
+	//docs.SwaggerInfo.BasePath = "/api"
+
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+	router.Run(":3080")
 }

@@ -1,0 +1,148 @@
+info:
+  contact: {}
+paths:
+  /file/download/{path}:
+    get:
+      description: download file
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: binary
+      summary: download file
+  /file/embed:
+    get:
+      description: Generate embedding
+      parameters:
+      - description: text for embedding
+        in: query
+        name: text
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: json
+      summary: Generate embedding
+  /file/html/{path}:
+    get:
+      description: Download HTML
+      produces:
+      - text/html
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: binary
+      summary: Download HTML
+  /file/hybrid:
+    get:
+      description: Hybrid Search
+      parameters:
+      - description: query string
+        in: query
+        name: query
+        required: true
+        type: string
+      - description: page length
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: json
+      summary: Hybrid Search
+  /file/lexical:
+    get:
+      description: Lexical Search
+      parameters:
+      - description: query string
+        in: query
+        name: query
+        required: true
+        type: string
+      - description: page length
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: json
+      summary: Lexical Search
+  /file/list:
+    get:
+      description: List all files
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: json
+      summary: List all files
+  /file/pdf/{path}:
+    get:
+      description: Download PDF
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: binary
+      summary: Download PDF
+  /file/semantic:
+    get:
+      description: Semantic Search
+      parameters:
+      - description: query string
+        in: query
+        name: query
+        required: true
+        type: string
+      - description: page length
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: json
+      summary: Semantic Search
+  /file/summary/{path}:
+    get:
+      description: Download Summary
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: binary
+      summary: Download Summary
+  /file/text/{path}:
+    get:
+      description: Download Text
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: binary
+      summary: Download Text
+swagger: "2.0"
