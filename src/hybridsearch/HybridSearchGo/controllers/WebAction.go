@@ -1,12 +1,11 @@
 package controllers
 
 import (
-	"net/http"
+	"github.com/gin-gonic/gin"
 )
 
 type WebAction struct {
-	Pattern   string
-	Handler   func(http.ResponseWriter, *http.Request)
-	Method    string
-	RouteType RouteTypes
+	Pattern string
+	Handler func(*gin.Context)
+	Method  string
 }

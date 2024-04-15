@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/gorilla/mux"
+	"github.com/gin-gonic/gin"
 	"hybrid-search/webapi/controllers/fileController"
 	"hybrid-search/webapi/providers/blobs"
 	"hybrid-search/webapi/providers/embed"
@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	router := mux.NewRouter()
+	router := gin.Default()
 
 	embed := embed.Create(embed.CreateOptions())
 

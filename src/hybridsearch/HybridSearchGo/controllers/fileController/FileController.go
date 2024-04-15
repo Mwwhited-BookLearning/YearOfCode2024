@@ -1,22 +1,18 @@
 package fileController
 
 import (
-	"encoding/json"
-
-	"github.com/gorilla/mux"
+	"github.com/gin-gonic/gin"
 
 	"hybrid-search/webapi/controllers"
 	"hybrid-search/webapi/providers"
 
 	"log"
-	"net/http"
 	"strconv"
-	"strings"
 )
 
 type FileController struct {
 	Actions []controllers.WebAction
-	Router  *mux.Router
+	Router  *gin.Engine
 
 	HybridSearchProvider   providers.HybridSearchProvider
 	LexicalSearchProvider  providers.LexicalSearchProvider
@@ -29,14 +25,13 @@ type FileController struct {
 }
 
 func Build(
-	router *mux.Router,
+	router *gin.Engine,
 	hybrid providers.HybridSearchProvider,
 	lexical providers.LexicalSearchProvider,
 	semantic providers.SemanticSearchProvider,
 	embedding providers.EmbeddingProvider,
 	documentBlob providers.BlobProvider,
 	summaryBlob providers.BlobProvider) FileController {
-	// https://github.com/gorilla/mux
 
 	service := FileController{
 		Router: router,
@@ -52,123 +47,118 @@ func Build(
 	}
 
 	actions := []controllers.WebAction{
-		{Pattern: "/file/download", Handler: service.Download, Method: "GET", RouteType: controllers.RouteTypePathFilter},
-		{Pattern: "/file/text", Handler: service.Text, Method: "GET", RouteType: controllers.RouteTypePathFilter},
-		{Pattern: "/file/html", Handler: service.Html, Method: "GET", RouteType: controllers.RouteTypePathFilter},
-		{Pattern: "/file/pdf", Handler: service.Pdf, Method: "GET", RouteType: controllers.RouteTypePathFilter},
-		{Pattern: "/file/summary", Handler: service.Summary, Method: "GET", RouteType: controllers.RouteTypePathFilter},
+		{Pattern: "/file/download/*path", Handler: service.Download, Method: "GET"},
+		{Pattern: "/file/text/*path", Handler: service.Text, Method: "GET"},
+		{Pattern: "/file/html/*path", Handler: service.Html, Method: "GET"},
+		{Pattern: "/file/pdf/*path", Handler: service.Pdf, Method: "GET"},
+		{Pattern: "/file/summary/*path", Handler: service.Summary, Method: "GET"},
 
-		{Pattern: "/file/list", Handler: service.List, Method: "GET", RouteType: controllers.RouteTypeQuery},
+		{Pattern: "/file/list", Handler: service.List, Method: "GET"},
 
-		{Pattern: "/file/embed", Handler: service.Embed, Method: "GET", RouteType: controllers.RouteTypeQuery},
+		{Pattern: "/file/embed", Handler: service.Embed, Method: "GET"},
 
-		{Pattern: "/file/semantic", Handler: service.Semantic, Method: "GET", RouteType: controllers.RouteTypeQuery},
-		{Pattern: "/file/lexical", Handler: service.Lexical, Method: "GET", RouteType: controllers.RouteTypeQuery},
-		{Pattern: "/file/hybrid", Handler: service.Hybrid, Method: "GET", RouteType: controllers.RouteTypeQuery},
+		{Pattern: "/file/semantic", Handler: service.Semantic, Method: "GET"},
+		{Pattern: "/file/lexical", Handler: service.Lexical, Method: "GET"},
+		{Pattern: "/file/hybrid", Handler: service.Hybrid, Method: "GET"},
 	}
 	service.Actions = actions
 
 	for idx, ctrl := range service.Actions {
 		log.Printf("FileController (%v): %s - %s", idx, ctrl.Pattern, ctrl.Method)
-		if ctrl.RouteType == controllers.RouteTypePathFilter {
-			router.PathPrefix(ctrl.Pattern).HandlerFunc(ctrl.Handler)
-		} else if ctrl.RouteType == controllers.RouteTypeQuery {
-			router.HandleFunc(ctrl.Pattern, ctrl.Handler)
+
+		if ctrl.Method == "GET" {
+			router.GET(ctrl.Pattern, ctrl.Handler)
+		} else if ctrl.Method == "POST" {
+			router.POST(ctrl.Pattern, ctrl.Handler)
 		}
 	}
 
 	return service
 }
 
-func getPath(request *http.Request, basePath string) string {
-	path := request.URL.Path[len(basePath):]
-	if strings.HasPrefix(path, "/") {
-		path = path[1:]
-	}
-	return path
-}
-
-func (ctrl FileController) Download(writer http.ResponseWriter, request *http.Request) {
-	path := getPath(request, "/file/download/")
+func (ctrl FileController) Download(context *gin.Context) {
+	path := context.Param("path")
 	log.Printf("Download: %s", path)
 	//TODO: finish him!
 	content := ctrl.DocumentBlobProvider.GetContent(path)
 
-	writer.Header().Add("ContentType", content.ContentType)
-	writer.Write(content.Content)
+	context.Header("ContentType", content.ContentType)
+	context.Writer.Write(content.Content)
 }
 
-func (ctrl FileController) Text(writer http.ResponseWriter, request *http.Request) {
-	path := getPath(request, "/file/text/")
+func (ctrl FileController) Text(context *gin.Context) {
+	path := context.Param("path")
 	log.Printf("Text: %s", path)
 }
 
-func (ctrl FileController) Html(writer http.ResponseWriter, request *http.Request) {
-	path := getPath(request, "/file/html/")
+func (ctrl FileController) Html(context *gin.Context) {
+	path := context.Param("path")
 	log.Printf("Html: %s", path)
 }
 
-func (ctrl FileController) Pdf(writer http.ResponseWriter, request *http.Request) {
-	path := getPath(request, "/file/pdf/")
+func (ctrl FileController) Pdf(context *gin.Context) {
+	path := context.Param("path")
 	log.Printf("Pdf: %s", path)
 }
 
-func (ctrl FileController) Summary(writer http.ResponseWriter, request *http.Request) {
-	path := getPath(request, "/file/summary/")
+func (ctrl FileController) Summary(context *gin.Context) {
+	path := context.Param("path")
 	log.Printf("Summary: %s", path)
 }
 
-func (ctrl FileController) List(writer http.ResponseWriter, request *http.Request) {
+func (ctrl FileController) List(context *gin.Context) {
 	log.Printf("List")
 
 	result := ctrl.DocumentBlobProvider.List()
-	json.NewEncoder(writer).Encode(result)
+	context.JSON(200, result)
 }
 
-func (ctrl FileController) Embed(writer http.ResponseWriter, request *http.Request) {
+func (ctrl FileController) Embed(context *gin.Context) {
 	log.Printf("Embed")
 
-	text := mux.Vars(request)["text"]
+	text := context.Query("text")
 
 	result, _ := ctrl.EmbeddingProvider.Embed(text)
-	json.NewEncoder(writer).Encode(result)
+	context.JSON(200, result)
 }
 
-func (ctrl FileController) Semantic(writer http.ResponseWriter, request *http.Request) {
+func (ctrl FileController) Semantic(context *gin.Context) {
 	log.Printf("Semantic")
 
-	query := mux.Vars(request)["query"]
-	limit, _ := strconv.Atoi(mux.Vars(request)["limit"])
+	query := context.Query("query")
+	limit, _ := strconv.Atoi(context.Query("limit"))
 
-	writer.Header().Add("X-APP-query", query)
-	writer.Header().Add("X-APP-limit", strconv.Itoa(limit))
+	context.Header("X-APP-query", query)
+	context.Header("X-APP-limit", strconv.Itoa(limit))
 
 	result := ctrl.SemanticSearchProvider.Search(query, limit)
-	json.NewEncoder(writer).Encode(result)
+	context.JSON(200, result)
 }
 
-func (ctrl FileController) Lexical(writer http.ResponseWriter, request *http.Request) {
+func (ctrl FileController) Lexical(context *gin.Context) {
 	log.Printf("Lexical")
 
-	query := mux.Vars(request)["query"]
-	limit, _ := strconv.Atoi(mux.Vars(request)["limit"])
+	query := context.Query("query")
+	limit, _ := strconv.Atoi(context.Query("limit"))
 
-	writer.Header().Add("X-APP-query", query)
-	writer.Header().Add("X-APP-limit", strconv.Itoa(limit))
+	context.Header("X-APP-query", query)
+	context.Header("X-APP-limit", strconv.Itoa(limit))
 
 	result := ctrl.LexicalSearchProvider.Search(query, limit)
-	json.NewEncoder(writer).Encode(result)
+	context.JSON(200, result)
 }
 
-func (ctrl FileController) Hybrid(writer http.ResponseWriter, request *http.Request) {
+func (ctrl FileController) Hybrid(context *gin.Context) {
 	log.Printf("Hybrid")
 
-	query := mux.Vars(request)["query"]
-	limit, _ := strconv.Atoi(mux.Vars(request)["limit"])
+	// writer http.ResponseWriter, request *http.Request,
+	query := context.Query("query")
+	limit, _ := strconv.Atoi(context.Query("limit"))
 
-	writer.Header().Add("X-APP-query", query)
-	writer.Header().Add("X-APP-limit", strconv.Itoa(limit))
+	context.Header("X-APP-query", query)
+	context.Header("X-APP-limit", strconv.Itoa(limit))
 
 	result := ctrl.HybridSearchProvider.Search(query, limit)
-	json.NewEncoder(writer).Encode(result)
+
+	context.JSON(200, result)
 }
