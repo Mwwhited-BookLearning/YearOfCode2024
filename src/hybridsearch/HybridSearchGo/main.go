@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"hybrid-search/webapi/controllers/fileController"
-	//docs "hybrid-search/webapi/docs"
+	docs "hybrid-search/webapi/docs"
 	"hybrid-search/webapi/providers/blobs"
 	"hybrid-search/webapi/providers/embed"
 	"hybrid-search/webapi/providers/hybrid"
@@ -16,6 +16,8 @@ import (
 )
 
 func main() {
+	docs.SwaggerInfo.BasePath = "/api"
+
 	router := gin.Default()
 
 	embed := embed.Create(embed.CreateOptions())
@@ -38,8 +40,6 @@ func main() {
 		embed,
 		blobDocs,
 		blobSummary)
-
-	//docs.SwaggerInfo.BasePath = "/api"
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	router.Run(":3080")

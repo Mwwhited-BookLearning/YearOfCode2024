@@ -11,10 +11,11 @@ require (
 	github.com/KyleBanks/depth v1.2.1 // indirect
 	github.com/PuerkitoBio/purell v1.2.1 // indirect
 	github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578 // indirect
-	github.com/bytedance/sonic v1.11.4 // indirect
+	github.com/bytedance/sonic v1.11.5 // indirect
+	github.com/bytedance/sonic/loader v0.1.1 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20230717121745-296ad89f973d // indirect
-	github.com/cloudwego/base64x v0.1.0 // indirect
-	github.com/cloudwego/iasm v0.1.0 // indirect
+	github.com/cloudwego/base64x v0.1.3 // indirect
+	github.com/cloudwego/iasm v0.2.0 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.4 // indirect
 	github.com/deepmap/oapi-codegen v1.5.6 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.3 // indirect
