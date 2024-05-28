@@ -1,0 +1,229 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/file/download/{path}": {
+            "get": {
+                "description": "download file",
+                "summary": "download file",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "binary"
+                        }
+                    }
+                }
+            }
+        },
+        "/file/embed": {
+            "get": {
+                "description": "Generate embedding",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Generate embedding",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "text for embedding",
+                        "name": "text",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "json"
+                        }
+                    }
+                }
+            }
+        },
+        "/file/html/{path}": {
+            "get": {
+                "description": "Download HTML",
+                "produces": [
+                    "text/html"
+                ],
+                "summary": "Download HTML",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "binary"
+                        }
+                    }
+                }
+            }
+        },
+        "/file/hybrid": {
+            "get": {
+                "description": "Hybrid Search",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Hybrid Search",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "query string",
+                        "name": "query",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "page length",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "json"
+                        }
+                    }
+                }
+            }
+        },
+        "/file/lexical": {
+            "get": {
+                "description": "Lexical Search",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Lexical Search",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "query string",
+                        "name": "query",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "page length",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "json"
+                        }
+                    }
+                }
+            }
+        },
+        "/file/list": {
+            "get": {
+                "description": "List all files",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "List all files",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "json"
+                        }
+                    }
+                }
+            }
+        },
+        "/file/pdf/{path}": {
+            "get": {
+                "description": "Download PDF",
+                "produces": [
+                    "text/plain"
+                ],
+                "summary": "Download PDF",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "binary"
+                        }
+                    }
+                }
+            }
+        },
+        "/file/semantic": {
+            "get": {
+                "description": "Semantic Search",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Semantic Search",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "query string",
+                        "name": "query",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "page length",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "json"
+                        }
+                    }
+                }
+            }
+        },
+        "/file/summary/{path}": {
+            "get": {
+                "description": "Download Summary",
+                "produces": [
+                    "text/plain"
+                ],
+                "summary": "Download Summary",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "binary"
+                        }
+                    }
+                }
+            }
+        },
+        "/file/text/{path}": {
+            "get": {
+                "description": "Download Text",
+                "produces": [
+                    "text/plain"
+                ],
+                "summary": "Download Text",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "binary"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
