@@ -5,3 +5,5 @@ docker run -d ^
 --name ollama ^
 --gpus all ^
 ollama/ollama
+
+REM docker exec -it ollama ollama run llama2

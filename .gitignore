@@ -396,3 +396,16 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+
+# RTC
+.jupyter_ystore.db
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+#jupyter
+.Trash-0/
+.ipynb_checkpoints/
