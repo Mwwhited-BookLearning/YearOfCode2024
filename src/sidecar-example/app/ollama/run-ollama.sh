@@ -1,6 +1,6 @@
 #!/bin/bash
 
-BASE_MODEL=phi3
+BASE_MODEL=$1
 echo "Starting Ollama server..."
 ollama serve &
 OLLAMA_PID=$!

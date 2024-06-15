@@ -1,19 +1,15 @@
 FROM ubuntu:22.04
-# FROM ubuntu:24.04
 
-RUN apt update -y && apt-get update -y && apt upgrade -y
+ENV SBERT_MODEL=sentence-transformers/all-mpnet-base-v2
+ENV OLLAMA_MODEL=phi3
 
-COPY ./app/ /app/
-WORKDIR /app
-
-#Web Reveruse Proxy
-RUN apt install nginx -y
-RUN rm -rf /var/www/html/*
-COPY ./wwwroot /var/www/html/
-# RUN systemctl start nginx && systemctl enable nginx
-
-# Python
-RUN apt install software-properties-common -y && \
+RUN apt update -y && \
+    apt upgrade -y && \
+    apt install nginx -y && \
+    apt install curl -y && \
+    apt install dotnet-sdk-8.0 -y && \
+    apt install supervisor -y && \
+    apt install software-properties-common -y && \
     add-apt-repository ppa:deadsnakes/ppa -y && \
     apt update -y && \
     apt install python3.10 -y && \
@@ -21,34 +17,25 @@ RUN apt install software-properties-common -y && \
     apt install pip -y && \
     ln -s /usr/bin/python3 /usr/bin/python
 
-# SBERT
-ENV SBERT_MODEL=sentence-transformers/all-mpnet-base-v2
-RUN pip3 install torch --index-url https://download.pytorch.org/whl/cu121
-RUN pip install transformers && \
+RUN pip3 install torch --index-url https://download.pytorch.org/whl/cu121 && \
+    pip install transformers && \
     pip install sentence-transformers && \
     pip install Flask && \
     pip install waitress
+
+RUN curl -fsSL https://ollama.com/install.sh | sh
+
+# set up options
+RUN rm -rf /var/www/html/*
+COPY ./wwwroot /var/www/html/
+COPY ./etc /etc
+COPY ./app/ /app/
+WORKDIR /app
+RUN /app/ollama/run-ollama.sh $OLLAMA_MODEL
 RUN python -c "from sentence_transformers import SentenceTransformer; model = SentenceTransformer('$SBERT_MODEL')"
 
-# dotnet
-RUN apt install -y dotnet-sdk-8.0
-
-# ollama
-RUN apt install curl -y
-RUN curl -fsSL https://ollama.com/install.sh | sh
-RUN /app/ollama/run-ollama.sh
-
-# set up services
-RUN apt install supervisor -y
-COPY ./etc /etc
-
 EXPOSE 80
-# # SBERT
-# EXPOSE 5000 
-# # Ollama
-# EXPOSE 11434 
 
-# CMD ["startup.sh"] 
 # CMD ["bash"] 
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
 

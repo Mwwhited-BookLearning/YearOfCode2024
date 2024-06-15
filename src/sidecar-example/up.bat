@@ -1,7 +1,8 @@
 
-@REM docker compose --project-name sidecar-example --file docker-compose.yml up --force-recreate
+@REM docker compose --project-name sidecar-example --file docker-compose.yml up
+@REM  --force-recreate --build --watch
 
-@REM --detach 
+@REM @REM --detach 
 
 docker build --tag oobdev/sidecar-example  --file .\DockerFile .
 docker run ^
