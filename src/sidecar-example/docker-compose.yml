@@ -1,0 +1,29 @@
+services:
+  sidecar:
+    build:
+      dockerfile: DockerFile
+      context: .
+    ports:
+    - 8080:80
+    - 5000:5000
+    - 11434:11434
+    volumes:
+    - blob-data:/var/blob-store/data
+    networks:
+    - backend
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge
+
+volumes:
+    blob-data:
