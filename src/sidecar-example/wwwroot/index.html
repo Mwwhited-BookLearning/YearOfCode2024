@@ -1,8 +1,37 @@
 <html>
-    <head>
-        <title>Welcome to your_domain!</title>
-    </head>
-    <body>
-        <h1>Success!  The your_domain server block is working!</h1>
-    </body>
+
+<head>
+    <title>Welcome to your test page!</title>
+</head>
+
+<body>
+    <h1>Success! The test server block is working!</h1>
+
+    <ul>
+        <li><a href="http://localhost:8080/sbert/generate-embedding?query=hello" target="_blank">Embedding Test</a></li>
+        <li><a href="http://localhost:8080/ollama/api/tags" target="_blank">List installed models</a></li>
+        <li><a href="http://localhost:8080/ollama/api/ps" target="_blank">List running models</a></li>
+    </ul>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Service</th>
+                <th>Base URL</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>SBERT</td>
+                <td>http://localhost:8080/sbert/</td>
+            </tr>
+            <tr>
+                <td>OLLAMA</td>
+                <td>http://localhost:8080/ollama/</td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+
 </html>
