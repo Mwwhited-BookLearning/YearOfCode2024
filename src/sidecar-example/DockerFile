@@ -2,6 +2,8 @@ FROM ubuntu:22.04
 
 ENV SBERT_MODEL=sentence-transformers/all-mpnet-base-v2
 ENV OLLAMA_MODEL=phi3
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=UTC
 
 RUN apt update -y && \
     apt upgrade -y && \
@@ -25,19 +27,33 @@ RUN pip3 install torch --index-url https://download.pytorch.org/whl/cu121 && \
 
 RUN curl -fsSL https://ollama.com/install.sh | sh
 
+RUN apt install -y postgresql-common git && \
+    apt install -y postgresql-server-dev-14
+RUN cd /tmp && \
+    git clone https://github.com/pgvector/pgvector.git && \
+    cd pgvector && \
+    make && \
+    make install
+RUN apt install postgresql-14 -y
+
 # set up options
 RUN rm -rf /var/www/html/*
 COPY ./wwwroot /var/www/html/
 COPY ./etc /etc
 COPY ./app/ /app/
 WORKDIR /app
+RUN echo "\\nexport PATH=\"\$PATH:/root/.dotnet/tools\"" >> ~/.bashrc
+RUN echo "export TZ=UTC" >> ~/.bashrc
+
 RUN /app/ollama/run-ollama.sh $OLLAMA_MODEL
 RUN python -c "from sentence_transformers import SentenceTransformer; model = SentenceTransformer('$SBERT_MODEL')"
+RUN dotnet tool install --global Rnwood.Smtp4dev    
+
 
 EXPOSE 80
 
 # CMD ["bash"] 
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
+CMD ["/usr/bin/supervisord", "--configuration", "/etc/supervisor/supervisord.conf"]
 
 # curl http://localhost:8080
 # curl http://localhost:8085/generate-embedding?query=hello
@@ -46,3 +62,4 @@ CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
 # curl http://localhost:8080
 # curl http://localhost:8080/sbert/generate-embedding?query=hello
 # curl http://localhost:8080/ollama/api/generate -d '{ "model": "phi3", "prompt":"Why is the sky blue?" }'
+# curl http://localhost:8080/mail
