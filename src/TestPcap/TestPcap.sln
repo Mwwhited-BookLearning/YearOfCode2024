@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35013.160
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestPcap.Cli", "TestPcap.Cli\TestPcap.Cli.csproj", "{3717134F-5337-4D75-81FF-AE3BA7E9F0AA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestPcap.Cli", "TestPcap.Cli\TestPcap.Cli.csproj", "{3717134F-5337-4D75-81FF-AE3BA7E9F0AA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrayTool", "TrayTool\TrayTool.csproj", "{97C014DD-F897-4AEB-B52F-B848E0C3C014}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{3717134F-5337-4D75-81FF-AE3BA7E9F0AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3717134F-5337-4D75-81FF-AE3BA7E9F0AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3717134F-5337-4D75-81FF-AE3BA7E9F0AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97C014DD-F897-4AEB-B52F-B848E0C3C014}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97C014DD-F897-4AEB-B52F-B848E0C3C014}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97C014DD-F897-4AEB-B52F-B848E0C3C014}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97C014DD-F897-4AEB-B52F-B848E0C3C014}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
